@@ -1,4 +1,4 @@
-package com.example.cookingrecipe.activity;
+package com.example.cookingrecipe.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,15 +14,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.cookingrecipe.R;
+import com.example.cookingrecipe.Activity.GoogleLoginActivity;
+import com.example.cookingrecipe.Activity.MainActivity;
 import com.example.cookingrecipe.databinding.FragmentAccountBinding;
-import com.example.cookingrecipe.databinding.FragmentFavoriteBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 public class AccountFragment extends Fragment {
 
@@ -58,7 +56,7 @@ public class AccountFragment extends Fragment {
         logout_btn = binding.logoutBtn;
         logout_btn.setOnClickListener(v -> signOut());
         login_btn = binding.loginBtn;
-        login_btn.setOnClickListener(v -> startActivity(new Intent(this.getActivity(), Login.class)));
+        login_btn.setOnClickListener(v -> startActivity(new Intent(this.getActivity(), GoogleLoginActivity.class)));
 
         name = binding.name;
         email = binding.email;

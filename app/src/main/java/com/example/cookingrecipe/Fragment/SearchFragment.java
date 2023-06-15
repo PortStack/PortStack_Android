@@ -1,4 +1,4 @@
-package com.example.cookingrecipe.activity;
+package com.example.cookingrecipe.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cookingrecipe.Activity.DetailRecipeActivity;
 import com.example.cookingrecipe.Adapter.RecipeListAdapter;
 import com.example.cookingrecipe.Domain.Model.Recipe;
 import com.example.cookingrecipe.Domain.Network.FirebaseRecipe;

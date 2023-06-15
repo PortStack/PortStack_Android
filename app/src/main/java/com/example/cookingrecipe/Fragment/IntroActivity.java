@@ -1,4 +1,4 @@
-package com.example.cookingrecipe.activity;
+package com.example.cookingrecipe.Fragment;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,16 +8,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.cookingrecipe.Activity.LoginActivity;
+import com.example.cookingrecipe.Activity.MainActivity;
 import com.example.cookingrecipe.Domain.DTO.UserDTO;
 import com.example.cookingrecipe.R;
 import com.example.cookingrecipe.Retrofit.API.RetrofitAPI;
 import com.example.cookingrecipe.Retrofit.RetrofitClient;
-import com.example.cookingrecipe.util.AuthConfig;
-import com.example.cookingrecipe.util.TokenUtil;
+import com.example.cookingrecipe.Util.AuthConfig;
+import com.example.cookingrecipe.Util.TokenUtil;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,11 +38,11 @@ public class IntroActivity extends AppCompatActivity {
         checkRefreshToken(this);
 
         textView.setOnClickListener(v -> {
-            startActivitys(this,LoginActivity.class);
+            startActivitys(this, LoginActivity.class);
         });
 
         startBtn.setOnClickListener(v -> {
-            startActivitys(this,MainActivity.class);
+            startActivitys(this, MainActivity.class);
         });
     }
 

@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
-    tools:context=".activity.MainActivity">
+    android:background="@color/white"
+    tools:context=".Activity.MainActivity">
 
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
-        android:name="com.example.cookingrecipe.activity.HomeFragment"
+        android:name="com.example.cookingrecipe.Activity.HomeFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@color/background"
         app:layout_constraintBottom_toTopOf="@+id/layout_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

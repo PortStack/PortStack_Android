@@ -1,4 +1,4 @@
-package com.example.cookingrecipe.activity;
+package com.example.cookingrecipe.Activity;
 
 
 import androidx.annotation.NonNull;
@@ -16,14 +16,12 @@ import com.example.cookingrecipe.Domain.DTO.UserDTO;
 import com.example.cookingrecipe.R;
 import com.example.cookingrecipe.Retrofit.API.RetrofitAPI;
 import com.example.cookingrecipe.Retrofit.RetrofitClient;
-import com.example.cookingrecipe.util.AuthConfig;
-import com.example.cookingrecipe.util.TokenUtil;
+import com.example.cookingrecipe.Util.AuthConfig;
+import com.example.cookingrecipe.Util.TokenUtil;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -35,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login2);
+        setContentView(R.layout.activity_login);
         editLogin = findViewById(R.id.editID);
         editPassword = findViewById(R.id.ediPassword);
         loginButton = findViewById(R.id.loginButton);
@@ -43,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         registerButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, Signup.class);
+            Intent intent = new Intent(this, SignupActivity.class);
             startActivity(intent);
         });
 

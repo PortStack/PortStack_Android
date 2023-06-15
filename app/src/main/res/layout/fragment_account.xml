@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/profilebkg"
-    tools:context=".activity.AccountFragment">
+    tools:context=".Fragment.AccountFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/login"
