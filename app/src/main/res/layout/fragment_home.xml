@@ -5,7 +5,7 @@
     android:id="@+id/home_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.HomeFragment">
+    tools:context=".Activity.HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
 

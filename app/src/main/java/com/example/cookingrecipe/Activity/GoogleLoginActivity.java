@@ -1,4 +1,4 @@
-package com.example.cookingrecipe.activity;
+package com.example.cookingrecipe.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,14 +16,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
-public class Login extends AppCompatActivity {
+public class GoogleLoginActivity extends AppCompatActivity {
 GoogleSignInOptions gso;
 GoogleSignInClient gsc;
 ImageView googleBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_google_login);
         googleBtn = findViewById(R.id.google_btn);
 
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
@@ -59,7 +59,7 @@ ImageView googleBtn;
     }
     void navigateToSecondActivity(){
         finish();
-        Intent intent = new Intent(Login.this,MainActivity.class);
+        Intent intent = new Intent(GoogleLoginActivity.this,MainActivity.class);
         startActivity(intent);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.cookingrecipe.activity;
+package com.example.cookingrecipe.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,9 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cookingrecipe.Adapter.CategoryAdapter;
 import com.example.cookingrecipe.Adapter.RecipeTodayAdapter;
 import com.example.cookingrecipe.Domain.DTO.RecipeDTO;
-import com.example.cookingrecipe.Domain.Model.Recipe;
 import com.example.cookingrecipe.Domain.Model.Type;
 import com.example.cookingrecipe.Domain.Network.FirebaseRecipe;
 import com.example.cookingrecipe.R;
@@ -29,10 +26,8 @@ import com.example.cookingrecipe.databinding.FragmentHomeBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Retrofit;
 
 
 public class HomeFragment extends Fragment {

@@ -1,17 +1,16 @@
-package com.example.cookingrecipe.activity;
+package com.example.cookingrecipe.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import com.example.cookingrecipe.R;
 
-public class    AddRecipe extends AppCompatActivity {
+public class RecipeAddActivity extends AppCompatActivity {
 
     private EditText editTextName;
     private EditText editTextIngredient;
@@ -24,6 +23,7 @@ public class    AddRecipe extends AppCompatActivity {
     private LinearLayout stepListLayout;
 
     private LinearLayout ingredientListLayout;
+    private ImageButton buttonBack;
 
 
     @Override
@@ -39,6 +39,7 @@ public class    AddRecipe extends AppCompatActivity {
         ingredientLayout = findViewById(R.id.ingredientLayout);
         buttonAddStep = findViewById(R.id.buttonAddStep);
         ingredientListLayout = findViewById(R.id.ingredientListLayout);
+        buttonBack = findViewById(R.id.buttonBack);
 
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
@@ -52,6 +53,12 @@ public class    AddRecipe extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 addIngredient();
+            }
+        });
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed(); // Handle the back button action here
             }
         });
 

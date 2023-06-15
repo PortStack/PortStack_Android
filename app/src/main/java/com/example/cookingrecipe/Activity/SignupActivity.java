@@ -1,4 +1,4 @@
-package com.example.cookingrecipe.activity;
+package com.example.cookingrecipe.Activity;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,10 +10,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cookingrecipe.R;
-import com.example.cookingrecipe.activity.LoginActivity;
 
 
-public class Signup extends AppCompatActivity {
+public class SignupActivity extends AppCompatActivity {
     TextView back;
     EditText name,id,pw,pw2,email,birthyear,birthdate,birthday;
     Button pwcheck, submit;
@@ -43,7 +42,7 @@ public class Signup extends AppCompatActivity {
             if(pw.getText().toString().equals(pw2.getText().toString())){
                 pwcheck.setText("일치");
             }else{
-                Toast.makeText(Signup.this, "비밀번호가 다릅니다.", Toast.LENGTH_LONG).show();
+                Toast.makeText(SignupActivity.this, "비밀번호가 다릅니다.", Toast.LENGTH_LONG).show();
             }
         });
 

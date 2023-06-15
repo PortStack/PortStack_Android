@@ -1,4 +1,4 @@
-package com.example.cookingrecipe.util;
+package com.example.cookingrecipe.Util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
