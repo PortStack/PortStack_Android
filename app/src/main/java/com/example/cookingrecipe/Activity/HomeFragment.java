@@ -2,6 +2,7 @@ package com.example.cookingrecipe.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +18,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cookingrecipe.Adapter.CategoryAdapter;
 import com.example.cookingrecipe.Adapter.RecipeTodayAdapter;
 import com.example.cookingrecipe.Domain.DTO.RecipeDTO;
+import com.example.cookingrecipe.Domain.DTO.RecipePageDTO;
+import com.example.cookingrecipe.Domain.DTO.UserDTO;
+import com.example.cookingrecipe.Domain.Model.Recipe;
 import com.example.cookingrecipe.Domain.Model.Type;
 import com.example.cookingrecipe.Domain.Network.FirebaseRecipe;
 import com.example.cookingrecipe.R;
 import com.example.cookingrecipe.Retrofit.API.RecipeAPI;
 import com.example.cookingrecipe.Retrofit.RetrofitClient;
 import com.example.cookingrecipe.databinding.FragmentHomeBinding;
+import com.example.cookingrecipe.Util.AuthConfig;
+import com.example.cookingrecipe.Util.TokenUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
 public class HomeFragment extends Fragment {
@@ -52,7 +61,7 @@ public class HomeFragment extends Fragment {
         recyclerViewCategory();
         recyclerViewRecipeToday();
 
-
+        Recipe(0,10);
 
         searchButton = binding.searchBtn;
         searchButton.setOnClickListener(v -> openSearchFragment());
@@ -68,6 +77,8 @@ public class HomeFragment extends Fragment {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
             recyclerViewRecipeTodayList = binding.recyclerViewToday;
             recyclerViewRecipeTodayList.setLayoutManager(linearLayoutManager);
+
+
 
             RecipeTodayAdapter recipeTodayAdapter = new RecipeTodayAdapter(recipeList);
             recipeTodayAdapter.setOnItemClickListener(recipeId -> {
@@ -106,8 +117,25 @@ public class HomeFragment extends Fragment {
         recyclerViewCategoryList.setAdapter(adapter);
     }
 
-    private void Recipe(){
+    private void Recipe(int page, int size){
         RecipeAPI recipeAPI = RetrofitClient.getClient(null).create(RecipeAPI.class);
-        Call<RecipeDTO.Request> call = recipeAPI.getRecipes(0,10,"id,DESC");
+        recipeAPI.getRecipes(page,size,"id,DESC").enqueue(new Callback<RecipePageDTO>() {
+
+            @Override
+            public void onResponse(@NonNull Call<RecipePageDTO> call, @NonNull Response<RecipePageDTO> response) {
+                if(response.isSuccessful()){
+                    RecipePageDTO recipes = response.body();
+
+                    Log.d("RecipeTest", recipes.getItems().get(0).getTitle().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RecipePageDTO> call, Throwable t) {
+                Log.d("Test",TokenUtil.getRefreshToken("실패"));
+                t.printStackTrace();
+            }
+
+        });
     }
 }
