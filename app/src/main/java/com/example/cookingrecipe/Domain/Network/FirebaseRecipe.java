@@ -110,7 +110,7 @@ public class FirebaseRecipe {
         for (DataSnapshot ingredientSnapshot : ingredientsSnapshot.getChildren()) {
             Ingredient ingredient = new Ingredient();
             ingredient.setName(ingredientSnapshot.child("name").getValue(String.class));
-            ingredient.setAmount(ingredientSnapshot.child("amount").getValue(String.class));
+            ingredient.setCount(ingredientSnapshot.child("amount").getValue(String.class));
             ingredient.setUnit(ingredientSnapshot.child("unit").getValue(String.class));
             ingredientList.add(ingredient);
         }

@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
     public void loginRequest(UserDTO.Request request,Intent intent){
-        RetrofitAPI retrofitAPI = RetrofitClient.getClient(null).create(RetrofitAPI.class);
+        RetrofitAPI retrofitAPI = RetrofitClient.getClient().create(RetrofitAPI.class);
         retrofitAPI.login(request).enqueue(new Callback<UserDTO.Response>() {
 
             @Override
@@ -73,16 +73,13 @@ public class LoginActivity extends AppCompatActivity {
                 if(response.isSuccessful()){
                     UserDTO.Response user = response.body();
 
-                    Log.d("TEST", "성공");
-                    Log.d("TEST", user.getAccessToken());
+                    System.out.println("access :" + user.getAccessToken());
+                    System.out.println("refresh :" + user.getRefreshToken());
+
                     TokenUtil.setAccessToken(user.getAccessToken());
                     TokenUtil.setRefreshToken(user.getRefreshToken());
                     ( (AuthConfig) getApplication() ).setNickName(user.getNickname());
 
-                    Log.d("TEST", "성공");
-                    Log.d("TEST",( (AuthConfig) getApplication() ).getNickName());
-                    Log.d("TEST", TokenUtil.getAccessToken("none"));
-                    Log.d("Test",TokenUtil.getRefreshToken("nine"));
 
                     startActivity(intent);
                     LoginActivity.this.finish();

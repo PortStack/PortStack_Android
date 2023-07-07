@@ -78,8 +78,6 @@ public class HomeFragment extends Fragment {
             recyclerViewRecipeTodayList = binding.recyclerViewToday;
             recyclerViewRecipeTodayList.setLayoutManager(linearLayoutManager);
 
-
-
             RecipeTodayAdapter recipeTodayAdapter = new RecipeTodayAdapter(recipeList);
             recipeTodayAdapter.setOnItemClickListener(recipeId -> {
                 Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
@@ -118,7 +116,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void Recipe(int page, int size){
-        RecipeAPI recipeAPI = RetrofitClient.getClient(null).create(RecipeAPI.class);
+        RecipeAPI recipeAPI = RetrofitClient.getClient().create(RecipeAPI.class);
         recipeAPI.getRecipes(page,size,"id,DESC").enqueue(new Callback<RecipePageDTO>() {
 
             @Override
@@ -126,7 +124,7 @@ public class HomeFragment extends Fragment {
                 if(response.isSuccessful()){
                     RecipePageDTO recipes = response.body();
 
-                    Log.d("RecipeTest", recipes.getItems().get(0).getTitle().toString());
+//                    Log.d("RecipeTest", recipes.getItems().get(0).getTitle().toString());
                 }
             }
 

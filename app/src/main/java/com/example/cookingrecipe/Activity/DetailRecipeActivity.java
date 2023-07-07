@@ -128,7 +128,7 @@ public class DetailRecipeActivity extends AppCompatActivity {
             sb.append("- ")
                     .append(ingredient.getName())
                     .append(": ")
-                    .append(ingredient.getAmount())
+                    .append(ingredient.getCount())
                     .append(" ")
                     .append(ingredient.getUnit())
                     .append("\n");

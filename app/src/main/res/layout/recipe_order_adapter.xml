@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="100dp">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:padding="5dp">
+        <TextView
+            android:id="@+id/sequence"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:text="1"
+            android:gravity="center"
+            />
+
+        <ImageView
+            android:id="@+id/recipe_image_view"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:src="@drawable/dough"
+            />
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content">
+            <EditText
+                android:id="@+id/recipeOrder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/memo_border"
+                android:gravity="start"
+                android:hint="레시피를 입력해주세요"
+                android:padding="10dp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+    <android.widget.Button
+        android:id="@+id/delete_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/round_button"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:text="x"
+        />
+</RelativeLayout>

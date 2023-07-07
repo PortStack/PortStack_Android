@@ -1,50 +1,54 @@
 package com.example.cookingrecipe.Domain.DTO;
 
+import com.example.cookingrecipe.Domain.Model.Ingredient;
+import com.example.cookingrecipe.Domain.Model.RecipeOrder;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class CookOrdersDTO {
 
-    @SerializedName("id")
-    private int id;
+    @SerializedName("title")
+    private String title;
 
-    @SerializedName("names")
-    private String names;
+    @SerializedName("writer")
+    private String writer;
 
-    @SerializedName("counts")
-    private int counts;
+    @SerializedName("recipeIngredients")
+    private List<Ingredient> recipeIngredients;
 
-    @SerializedName("units")
-    private String units;
+    @SerializedName("cookOrders")
+    private List<RecipeOrder> cookOrders;
 
-    public int getId() {
-        return id;
+    public String getTitle() {
+        return title;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getNames() {
-        return names;
+    public String getWriter() {
+        return writer;
     }
 
-    public void setNames(String names) {
-        this.names = names;
+    public void setWriter(String writer) {
+        this.writer = writer;
     }
 
-    public int getCounts() {
-        return counts;
+    public List<Ingredient> getRecipeIngredients() {
+        return recipeIngredients;
     }
 
-    public void setCounts(int counts) {
-        this.counts = counts;
+    public void setRecipeIngredients(List<Ingredient> recipeIngredients) {
+        this.recipeIngredients = recipeIngredients;
     }
 
-    public String getUnits() {
-        return units;
+    public List<RecipeOrder> getCookOrders() {
+        return cookOrders;
     }
 
-    public void setUnits(String units) {
-        this.units = units;
+    public void setCookOrders(List<RecipeOrder> cookOrders) {
+        this.cookOrders = cookOrders;
     }
 }

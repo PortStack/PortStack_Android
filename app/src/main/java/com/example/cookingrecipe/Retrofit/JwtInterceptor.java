@@ -1,4 +1,6 @@
 package com.example.cookingrecipe.Retrofit;
+import com.example.cookingrecipe.Util.TokenUtil;
+
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -9,13 +11,15 @@ public class JwtInterceptor implements Interceptor {
 
     private String jwtToken;
 
-    public JwtInterceptor(String jwtToken) {
-        this.jwtToken = jwtToken;
+    public JwtInterceptor() {
+        this.jwtToken = TokenUtil.getAccessToken("none");
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request originalRequest = chain.request();
+
+        System.out.println("jwtInterceptor : " + jwtToken);
 
         // If JWT token is available, add it to the Authorization header
         if (jwtToken != null && !jwtToken.isEmpty()) {
