@@ -14,6 +14,9 @@ public class CookOrdersDTO {
     @SerializedName("writer")
     private String writer;
 
+    @SerializedName("tags")
+    private String tags;
+
     @SerializedName("recipeIngredients")
     private List<Ingredient> recipeIngredients;
 
@@ -36,6 +39,13 @@ public class CookOrdersDTO {
         this.writer = writer;
     }
 
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
     public List<Ingredient> getRecipeIngredients() {
         return recipeIngredients;
     }

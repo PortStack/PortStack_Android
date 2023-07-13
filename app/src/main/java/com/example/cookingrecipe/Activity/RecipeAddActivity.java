@@ -2,11 +2,14 @@ package com.example.cookingrecipe.Activity;
 
 import static com.example.cookingrecipe.Util.ImageUtils.convertImageToByteArray;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -17,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -44,11 +48,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RecipeAddActivity extends AppCompatActivity {
+public class RecipeAddActivity extends AppCompatActivity{
     private List<Ingredient> Ingredients;
     private List<RecipeOrder> recipeOrders;
     private List<ImageItem> imageItemList;
+    private ImageItem thumbNail;
     private EditText editTextName;
+    private EditText editTags;
     private EditText editTextInstructions;
     private Button buttonAdd;
     private Button buttonAddIngredient;
@@ -60,6 +66,10 @@ public class RecipeAddActivity extends AppCompatActivity {
     private RecyclerView cookOrderView;
     private IngredientListAdapter ingredientAdapter;
     private CookOrdersAdapter cookOrdersAdapter;
+    private ImageView thumbNailView;
+    private ActivityResultLauncher<Intent> galleryLauncher;
+    private int currentPosition;
+
 
     private String getImageFileName(Uri imageUri) {
         String fileName = null;
@@ -90,7 +100,6 @@ public class RecipeAddActivity extends AppCompatActivity {
             imageItem.setImageUri(selectedImageUri);
 
             String fileName = getImageFileName(selectedImageUri);
-            System.out.println(fileName);
 
             RecipeOrder recipeOrderItem = recipeOrders.get(requestCode);
             recipeOrderItem.setOrderImageName(fileName);
@@ -104,6 +113,7 @@ public class RecipeAddActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_recipe);
 
         editTextName = findViewById(R.id.editTextName);
+        editTags = findViewById(R.id.editTag);
         buttonAdd = findViewById(R.id.buttonAdd);
         buttonAddIngredient = findViewById(R.id.addIngredient);
         buttonAddStep = findViewById(R.id.buttonAddStep);
@@ -112,6 +122,7 @@ public class RecipeAddActivity extends AppCompatActivity {
         ingredientView = (RecyclerView) findViewById(R.id.ingredientListLayout);
         cookOrderView = (RecyclerView) findViewById(R.id.cookOrdersLayout);
 
+        thumbNailView = findViewById(R.id.thumbNailView);
 
         Ingredients = new ArrayList<>();
         ingredientAdapter = new IngredientListAdapter(Ingredients);
@@ -136,6 +147,9 @@ public class RecipeAddActivity extends AppCompatActivity {
         List<ImageItem> imageDataS = cookOrdersAdapter.getImageItemList();
         orderDataS.add(new RecipeOrder());
         imageDataS.add(new ImageItem());
+
+
+
         cookOrdersAdapter.notifyItemInserted(orderDataS.size() -1);
 
 
@@ -166,6 +180,73 @@ public class RecipeAddActivity extends AppCompatActivity {
             }
         });
 
+        cookOrdersAdapter.setImageClickListener((imageData, position) -> {
+            currentPosition = position;
+            openGallery();
+        });
+
+        thumbNailView.setOnClickListener(v -> {
+            currentPosition = 100;
+            openGallery();
+        });
+
+        currentPosition = -1; //adapter의 현재 위치
+        galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    int resultCode = result.getResultCode();
+                    Intent data = result.getData();
+                    if (resultCode == RESULT_OK && data != null && currentPosition >= 0) {
+                        Uri selectedImageUri = data.getData();
+                        ImageItem imageData = new ImageItem(selectedImageUri);
+                        if (currentPosition >= 100) {
+                            thumbNailView.setImageURI(selectedImageUri);
+                            thumbNail = imageData;
+                        } else {
+                            ImageItem imageItem = imageItemList.get(result.getResultCode());
+                            imageItem.setImageUri(selectedImageUri);
+
+                            String fileName = getImageFileName(selectedImageUri);
+
+                            RecipeOrder recipeOrderItem = recipeOrders.get(result.getResultCode());
+                            recipeOrderItem.setOrderImageName(fileName);
+                            cookOrdersAdapter.notifyItemChanged(result.getResultCode());
+                        }
+                    }
+                    currentPosition = -1;
+                });
+
+        galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            Uri selectedImageUri = data.getData();
+                            if (currentPosition >= 100) {
+                                // 액티비티 자체에 이미지 저장
+                                thumbNailView.setImageURI(selectedImageUri);
+                            } else {
+                                // 어댑터에 이미지 저장
+                                ImageItem imageItem = imageItemList.get(currentPosition);
+                                imageItem.setImageUri(selectedImageUri);
+
+                                String fileName = getImageFileName(selectedImageUri);
+
+                                RecipeOrder recipeOrderItem = recipeOrders.get(currentPosition);
+                                recipeOrderItem.setOrderImageName(fileName);
+                                cookOrdersAdapter.notifyItemChanged(currentPosition);
+                            }
+                        }
+                    }
+                });
+
+
+
+    }
+
+    //갤러리를 열어서 이미지 선택
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryLauncher.launch(intent);
     }
 
     // Image의 절대경로를 가져오는 메소드
@@ -204,6 +285,11 @@ public class RecipeAddActivity extends AppCompatActivity {
         List<MultipartBody.Part> orderImagesParts = new ArrayList<>();
         List<MultipartBody.Part> themNailImageParts = new ArrayList<>();
 
+        /*
+        * 리팩토링 고려 대상
+        *
+        * */
+        //오더 레시피들 저장
         for (int i = 0; i < imageItemList.size(); i++) {
             ImageItem imageItem = imageItemList.get(i);
             Uri imageUri = imageItem.getImageUri();
@@ -218,12 +304,26 @@ public class RecipeAddActivity extends AppCompatActivity {
 
 
                 MultipartBody.Part orderImagePart = MultipartBody.Part.createFormData("orderImage", imageFile.getName(), requestBody);
-                MultipartBody.Part themNailImagePart = MultipartBody.Part.createFormData("themNail", imageFile.getName(), requestBody);
                 orderImagesParts.add(orderImagePart);
-                themNailImageParts.add(themNailImagePart);
             }
         }
-        System.out.println("json: " + jsonRequestBody);
+
+        //썸네일 저장
+        ImageItem imageItem = thumbNail;
+        Uri imageUri = imageItem.getImageUri();
+        String imagePath = getRealPathFromURI(imageUri);
+
+        if (imageUri != null) {
+            File imageFile = new File(imagePath); // 이미지 MIME 타입 얻기
+            System.out.println(imageFile);
+
+            // 이미지 파일을 바이트 배열로 변환
+            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), imageFile);
+
+            MultipartBody.Part themNailImagePart = MultipartBody.Part.createFormData("themNail", imageFile.getName(), requestBody);
+            themNailImageParts.add(themNailImagePart);
+        }
+
         Call<ResponseBody> call = retrofitAPI.setNewRecipes(jsonRequestBody,orderImagesParts,themNailImageParts);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -245,12 +345,14 @@ public class RecipeAddActivity extends AppCompatActivity {
 
     }
 
+
     private CookOrdersDTO setCookOrders(){
         CookOrdersDTO cookOrdersDTO = new CookOrdersDTO();
 
         cookOrdersDTO.setCookOrders(recipeOrders);
         cookOrdersDTO.setRecipeIngredients(Ingredients);
         cookOrdersDTO.setWriter("tester2");
+        cookOrdersDTO.setTags(editTags.getText().toString());
         cookOrdersDTO.setTitle(editTextName.getText().toString());
 
         return cookOrdersDTO;
@@ -271,4 +373,6 @@ public class RecipeAddActivity extends AppCompatActivity {
         Images.add(new ImageItem());
         cookOrdersAdapter.notifyItemInserted(recipeOrders.size() -1);
     }
+
+
 }

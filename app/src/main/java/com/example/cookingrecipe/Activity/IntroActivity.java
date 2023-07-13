@@ -81,7 +81,6 @@ public class IntroActivity extends AppCompatActivity {
 
     // 권한 체크
     private void permissionCheck(){
-        System.out.println("test12323123");
         // sdk 23버전 이하 버전에서는 permission이 필요하지 않음
         if(Build.VERSION.SDK_INT >= 23){
             System.out.println("permissionCheck");

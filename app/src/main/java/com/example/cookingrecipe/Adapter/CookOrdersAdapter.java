@@ -17,6 +17,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +28,7 @@ import com.example.cookingrecipe.Domain.Model.RecipeOrder;
 import com.example.cookingrecipe.OnMinusButtonClickListener;
 import com.example.cookingrecipe.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CookOrdersAdapter extends RecyclerView.Adapter<CookOrdersAdapter.ViewHolder>{
@@ -34,14 +37,24 @@ public class CookOrdersAdapter extends RecyclerView.Adapter<CookOrdersAdapter.Vi
     Context context;
     List<RecipeOrder> recipeOrderList;
     List<ImageItem> imageItemList;
+
+    List<TextWatcher> textWatchers;
     OnMinusButtonClickListener minusButtonClickListener;
+    private OnImageClickListener imageClickListener;
+    private ActivityResultLauncher<Intent> galleryLauncher;
 
     private static final int REQUEST_CODE_IMAGE = 1;
 
     public CookOrdersAdapter(Context context,List<RecipeOrder> recipeOrderList, List<ImageItem> imageItemList){
         this.context = context;
         this.recipeOrderList = recipeOrderList;
+        this.textWatchers = new ArrayList<>();
         this.imageItemList = imageItemList;
+
+    }
+
+    public void setImageClickListener(OnImageClickListener listener) {
+        this.imageClickListener = listener;
     }
 
     public void setOnMinusButtonClickListener(OnMinusButtonClickListener listener) {
@@ -55,11 +68,13 @@ public class CookOrdersAdapter extends RecyclerView.Adapter<CookOrdersAdapter.Vi
         return new CookOrdersAdapter.ViewHolder(inflater);
     }
 
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView recipeImageView;
         TextView sequenceText;
         EditText editRecipeOrder;
         Button deleteOrderBtn;
+        TextWatcher textWatcher;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -73,6 +88,7 @@ public class CookOrdersAdapter extends RecyclerView.Adapter<CookOrdersAdapter.Vi
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION){
+                        System.out.println(recipeOrderList.get(position).getContent());
                         recipeOrderList.remove(position);
                         imageItemList.remove(position);
                         updateSequenceNumbers();
@@ -82,20 +98,30 @@ public class CookOrdersAdapter extends RecyclerView.Adapter<CookOrdersAdapter.Vi
             });
         }
 
-        public void bindImage(Uri imageUri){
-            recipeImageView.setImageURI(imageUri);
+        private void removeTextWatcher(int position) {
+            if (position < textWatchers.size()) {
+                TextWatcher textWatcher = textWatchers.get(position);
 
-            recipeImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        // 갤러리에서 이미지 선택
-                        openGallery(position);
-                    }
-                }
-            });
+                // 해당 position의 TextWatcher를 해제합니다.
+                // EditText 등에서 사용하는 TextWatcher 해제 메서드를 호출해야 합니다.
+            }
         }
+
+
+//        public void bindImage(Uri imageUri){
+//            recipeImageView.setImageURI(imageUri);
+//
+//            recipeImageView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    int position = getAdapterPosition();
+//                    if (position != RecyclerView.NO_POSITION) {
+//                        // 갤러리에서 이미지 선택
+//                        openGallery(position);
+//                    }
+//                }
+//            });
+//        }
 
         public void bindEditRecipeOrder(String recipeOrder){
             editRecipeOrder.setText(recipeOrder);
@@ -115,26 +141,42 @@ public class CookOrdersAdapter extends RecyclerView.Adapter<CookOrdersAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull CookOrdersAdapter.ViewHolder holder, int position) {
         ImageItem imageItem = imageItemList.get(position);
-        holder.bindImage(imageItem.getImageUri());
+//        holder.bindImage(imageItem.getImageUri());
+        holder.recipeImageView.setImageURI(imageItem.getImageUri());
         holder.bindSequence(position + 1);
-        EditText editIngredientAmount = holder.editRecipeOrder;
+        EditText editRecipeOrder = holder.editRecipeOrder;
 
 
-        editIngredientAmount.addTextChangedListener(new TextWatcher() {
+        holder.recipeImageView.setOnClickListener(v -> {
+            if (imageClickListener != null) {
+                int adapterPosition = holder.getAdapterPosition();
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    imageClickListener.onImageClicked(imageItem, adapterPosition);
+                }
+            }
+        });
+
+        editRecipeOrder.removeTextChangedListener(holder.textWatcher); // 기존의 TextWatcher 제거
+
+        RecipeOrder recipeOrder = recipeOrderList.get(position);
+        editRecipeOrder.setText(recipeOrder.getContent());
+
+        holder.textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                recipeOrderList.get(holder.getAdapterPosition()).setContent(s.toString());
+                recipeOrder.setContent(s.toString());
             }
 
             @Override
             public void afterTextChanged(Editable s) {
             }
-        });
+        };
+
+        editRecipeOrder.addTextChangedListener(holder.textWatcher);
 
 
     }
@@ -157,6 +199,10 @@ public class CookOrdersAdapter extends RecyclerView.Adapter<CookOrdersAdapter.Vi
             recipeOrder.setSequence(i + 1);
         }
         notifyDataSetChanged();
+    }
+
+    public interface OnImageClickListener {
+        void onImageClicked(ImageItem imageData, int position);
     }
 
 }

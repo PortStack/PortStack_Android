@@ -23,6 +23,9 @@ public class RecipeDTO {
         @SerializedName("modifiedDate")
         private String modifiedDate;
 
+        @SerializedName("tags")
+        private String tags;
+
         @SerializedName("views")
         private int views;
 
@@ -38,6 +41,8 @@ public class RecipeDTO {
         public int getId() {return id;}
 
         public String getTitle() {return title;}
+
+        public String getTags() { return tags;}
 
         public String getNickname() {return nickname;}
 
@@ -81,6 +86,7 @@ public class RecipeDTO {
             this.likes = likes;
         }
 
+        public void setTags(String tags) { this.tags = tags;}
         public void setIngredientList(List<IngredientDTO> ingredientList) {
             this.ingredientList = ingredientList;
         }
