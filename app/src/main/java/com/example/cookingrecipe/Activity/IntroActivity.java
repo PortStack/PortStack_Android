@@ -95,15 +95,15 @@ public class IntroActivity extends AppCompatActivity {
     }
 
     // Request Permission에 대한 결과 값을 받는다.
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        // 리턴이 false일 경우 다시 권한 요청
-        if (!permission.permissionResult(requestCode, permissions, grantResults)){
-            permission.requestPermission();
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//
+//        // 리턴이 false일 경우 다시 권한 요청
+//        if (!permission.permissionResult(requestCode, permissions, grantResults)){
+//            permission.requestPermission();
+//        }
+//    }
     private void checkRefreshToken(Context thisContext){
         String refreshToken = TokenUtil.getRefreshToken(null);
         if(refreshToken != null){

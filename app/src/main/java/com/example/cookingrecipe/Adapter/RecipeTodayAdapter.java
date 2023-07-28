@@ -12,7 +12,9 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.cookingrecipe.Domain.DTO.RecipeDTO;
 import com.example.cookingrecipe.Domain.Model.Recipe;
+import com.example.cookingrecipe.Domain.Model.RecipeEntity;
 import com.example.cookingrecipe.OnItemClickListener;
 import com.example.cookingrecipe.R;
 
@@ -23,14 +25,14 @@ public class
 
 
 RecipeTodayAdapter extends RecyclerView.Adapter<RecipeTodayAdapter.ViewHolder> {
-    List<Recipe> recipeList;
+    List<RecipeDTO.Request> recipeList;
     private OnItemClickListener listener;
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 
-    public RecipeTodayAdapter(List<Recipe> recipeList) {
+    public RecipeTodayAdapter(List<RecipeDTO.Request> recipeList) {
         this.recipeList = recipeList;
     }
 
@@ -46,22 +48,22 @@ RecipeTodayAdapter extends RecyclerView.Adapter<RecipeTodayAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull RecipeTodayAdapter.ViewHolder holder, int position) {
-        Recipe recipe = recipeList.get(holder.getAdapterPosition());
+        RecipeDTO.Request recipe = recipeList.get(holder.getAdapterPosition());
 
         holder.recipeTitle.setText(recipe.getTitle());
 
-        String imageURL = recipe.getImage();
+        String imageURL = recipe.getThemNailUrl();
         holder.main_layout.setBackground(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.cat_bg));
 
         if (!imageURL.isBlank()) {
             Glide.with(holder.recipeImage.getContext())
-                    .load(imageURL)
+                    .load("http://211.109.43.213:8081/images" +imageURL)
                     .into(holder.recipeImage);
         }
 
         holder.itemView.setOnClickListener(view -> {
             if (listener != null) {
-                listener.onItemClick(recipe.getId());
+                listener.onItemClick(Integer.toString(recipe.getId()));
             }
         });
     }

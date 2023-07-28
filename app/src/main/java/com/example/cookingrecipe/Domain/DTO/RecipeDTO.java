@@ -1,5 +1,6 @@
 package com.example.cookingrecipe.Domain.DTO;
 
+import com.example.cookingrecipe.Domain.Model.Recipe;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -26,6 +27,9 @@ public class RecipeDTO {
         @SerializedName("tags")
         private String tags;
 
+        @SerializedName("themNailUrl")
+        private String themNailUrl;
+
         @SerializedName("views")
         private int views;
 
@@ -41,6 +45,8 @@ public class RecipeDTO {
         public int getId() {return id;}
 
         public String getTitle() {return title;}
+
+        public String getThemNailUrl() { return themNailUrl;}
 
         public String getTags() { return tags;}
 
@@ -94,6 +100,7 @@ public class RecipeDTO {
         public void setCookOrderList(List<CookOrdersDTO> cookOrderList) {
             this.cookOrderList = cookOrderList;
         }
+
 
     }
 

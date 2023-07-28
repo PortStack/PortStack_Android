@@ -32,6 +32,7 @@ import com.example.cookingrecipe.Util.TokenUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,6 +47,7 @@ public class HomeFragment extends Fragment {
 
     private ConstraintLayout searchButton;
     FragmentHomeBinding binding;
+    RecipePageDTO recipes;
 
     private NavController navController;
     @Override
@@ -63,6 +65,8 @@ public class HomeFragment extends Fragment {
 
         Recipe(0,10);
 
+
+
         searchButton = binding.searchBtn;
         searchButton.setOnClickListener(v -> openSearchFragment());
         return view;
@@ -72,23 +76,24 @@ public class HomeFragment extends Fragment {
         BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.search);
     }
-    private void recyclerViewRecipeToday() {
-        new FirebaseRecipe().getAllRecipe(recipeList -> {
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-            recyclerViewRecipeTodayList = binding.recyclerViewToday;
-            recyclerViewRecipeTodayList.setLayoutManager(linearLayoutManager);
+    private void recyclerViewRecipeToday(List<RecipeDTO.Request> recipeList) {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerViewRecipeTodayList = binding.recyclerViewToday;
+        recyclerViewRecipeTodayList.setLayoutManager(linearLayoutManager);
 
-            RecipeTodayAdapter recipeTodayAdapter = new RecipeTodayAdapter(recipeList);
-            recipeTodayAdapter.setOnItemClickListener(recipeId -> {
-                Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
-                intent.putExtra("recipeId", recipeId);
-                startActivity(intent);
-            });
-            adapter = recipeTodayAdapter;
-            recyclerViewRecipeTodayList.setAdapter(adapter);
+        Log.d("RecipeTest", recipes.getItems().get(0).getThemNailUrl().toString());
+        // 어댑터와 연결
+        RecipeTodayAdapter recipeTodayAdapter = new RecipeTodayAdapter(recipeList);
+        recipeTodayAdapter.setOnItemClickListener(recipeId -> {
+            Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
+            intent.putExtra("recipeId", recipeId);
+            startActivity(intent);
         });
-
+        adapter = recipeTodayAdapter;
+        recyclerViewRecipeTodayList.setAdapter(adapter);
     }
+
+
 
     private void recyclerViewCategory() {
 
@@ -122,9 +127,12 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<RecipePageDTO> call, @NonNull Response<RecipePageDTO> response) {
                 if(response.isSuccessful()){
-                    RecipePageDTO recipes = response.body();
+                    recipes = response.body();
 
-//                    Log.d("RecipeTest", recipes.getItems().get(0).getTitle().toString());
+                    List<RecipeDTO.Request> recipeList = recipes.getItems();
+
+                    recyclerViewRecipeToday(recipeList);
+
                 }
             }
 
