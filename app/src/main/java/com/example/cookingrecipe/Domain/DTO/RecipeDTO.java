@@ -1,6 +1,7 @@
 package com.example.cookingrecipe.Domain.DTO;
 
 import com.example.cookingrecipe.Domain.Model.Recipe;
+import com.example.cookingrecipe.Domain.Model.RecipeOrder;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class RecipeDTO {
         private List<IngredientDTO> ingredientList;
 
         @SerializedName("cookOrderList")
-        private List<CookOrdersDTO> cookOrderList;
+        private List<RecipeOrder> cookOrderList;
 
         public int getId() {return id;}
 
@@ -62,7 +63,7 @@ public class RecipeDTO {
 
         public List<IngredientDTO> getIngredientList() {return ingredientList;}
 
-        public List<CookOrdersDTO> getCookOrderList() {return cookOrderList;}
+        public List<RecipeOrder> getCookOrderList() {return cookOrderList;}
 
         public void setId(int id) {
             this.id = id;
@@ -97,7 +98,7 @@ public class RecipeDTO {
             this.ingredientList = ingredientList;
         }
 
-        public void setCookOrderList(List<CookOrdersDTO> cookOrderList) {
+        public void setCookOrderList(List<RecipeOrder> cookOrderList) {
             this.cookOrderList = cookOrderList;
         }
 

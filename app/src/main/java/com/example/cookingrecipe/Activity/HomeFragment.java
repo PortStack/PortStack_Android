@@ -61,9 +61,9 @@ public class HomeFragment extends Fragment {
         View view = binding.getRoot();
 
         recyclerViewCategory();
-        recyclerViewRecipeToday();
+//        recyclerViewRecipeToday();
 
-        Recipe(0,10);
+        getRecipe(0,10);
 
 
 
@@ -120,7 +120,7 @@ public class HomeFragment extends Fragment {
         recyclerViewCategoryList.setAdapter(adapter);
     }
 
-    private void Recipe(int page, int size){
+    private void getRecipe(int page, int size){
         RecipeAPI recipeAPI = RetrofitClient.getClient().create(RecipeAPI.class);
         recipeAPI.getRecipes(page,size,"id,DESC").enqueue(new Callback<RecipePageDTO>() {
 

@@ -72,7 +72,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
 
         holder.click_area.setOnClickListener(view -> {
             if (itemClickListener != null) {
-                itemClickListener.onItemClick(recipe.getId());
+                itemClickListener.onItemClick(Integer.parseInt(recipe.getId()));
             }
         });
 

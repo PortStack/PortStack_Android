@@ -16,6 +16,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface RecipeAPI {
@@ -25,6 +26,11 @@ public interface RecipeAPI {
             @Query("page") int page,
             @Query("size") int size,
             @Query("sort") String sort
+    );
+
+    @GET("/recipe/read/{id}")
+    Call<RecipeDTO.Request> getRecipeDetail(
+            @Path("id") int page
     );
 
     @Multipart

@@ -63,7 +63,7 @@ RecipeTodayAdapter extends RecyclerView.Adapter<RecipeTodayAdapter.ViewHolder> {
 
         holder.itemView.setOnClickListener(view -> {
             if (listener != null) {
-                listener.onItemClick(Integer.toString(recipe.getId()));
+                listener.onItemClick(recipe.getId());
             }
         });
     }
