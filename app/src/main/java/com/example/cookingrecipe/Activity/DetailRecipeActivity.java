@@ -81,7 +81,6 @@ public class DetailRecipeActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         toolbar.setOnMenuItemClickListener(this::onNavigationItemSelected);
 
-
 //        if (NetworkHelper.isNetworkConnected(this)) {
 //            new FirebaseRecipe().getRecipeById(recipeId, recipe -> {
 //                showDetailRecipe(recipe);
@@ -107,8 +106,10 @@ public class DetailRecipeActivity extends AppCompatActivity {
 //        servingTextView.setText(recipe.getServings());
         timeTextView = findViewById(R.id.recipe_time);
 //        timeTextView.setText(String.valueOf(recipe.getTime()));
-//        recyclerViewIngredient(recipe);
-//        recyclerViewStep(recipe);
+
+
+        recyclerViewIngredient(recipe);
+        recyclerViewStep(recipe);
     }
 
     private boolean onNavigationItemSelected(MenuItem item) {
@@ -153,6 +154,7 @@ public class DetailRecipeActivity extends AppCompatActivity {
                     .append(ingredient.getUnits())
                     .append("\n");
         }
+        Log.d("Ingredients", sb.toString());
         return sb.toString();
     }
 
@@ -188,7 +190,7 @@ public class DetailRecipeActivity extends AppCompatActivity {
 //        }
 //    }
 
-    private void recyclerViewStep(Recipe recipe) {
+    private void recyclerViewStep(RecipeDTO.Request recipe) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerViewSteps = findViewById(R.id.step);
         recyclerViewSteps.setLayoutManager(linearLayoutManager);
@@ -197,7 +199,7 @@ public class DetailRecipeActivity extends AppCompatActivity {
 
     }
 
-    private void recyclerViewIngredient(Recipe recipe) {
+    private void recyclerViewIngredient(RecipeDTO.Request recipe) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerViewIngredients = findViewById(R.id.ingredient);
         recyclerViewIngredients.setLayoutManager(linearLayoutManager);

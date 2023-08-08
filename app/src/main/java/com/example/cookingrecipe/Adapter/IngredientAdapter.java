@@ -1,5 +1,6 @@
 package com.example.cookingrecipe.Adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,14 +10,16 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cookingrecipe.Domain.DTO.IngredientDTO;
+import com.example.cookingrecipe.Domain.DTO.RecipeDTO;
 import com.example.cookingrecipe.Domain.Model.Ingredient;
 import com.example.cookingrecipe.Domain.Model.Recipe;
 import com.example.cookingrecipe.R;
 
 public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.ViewHolder> {
-    Recipe recipe;
+    RecipeDTO.Request recipe;
 
-    public IngredientAdapter(Recipe recipe) {
+    public IngredientAdapter(RecipeDTO.Request recipe) {
         this.recipe = recipe;
     }
 
@@ -29,14 +32,16 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull IngredientAdapter.ViewHolder holder, int position) {
-        Ingredient ingredient = recipe.getIngredients().get(holder.getAdapterPosition());
-        holder.ingredient_text.setText(ingredient.getCount() + " " + ingredient.getUnit() + " " + ingredient.getName());
+        Log.d("testsdfer1", recipe.getTitle());
+        System.out.println(recipe.getIngredientList().get(0).getNames());
+        IngredientDTO ingredient = recipe.getIngredientList().get(holder.getAdapterPosition());
+        holder.ingredient_text.setText(ingredient.getCounts() + " " + ingredient.getUnits() + " " + ingredient.getNames());
 
     }
 
     @Override
     public int getItemCount() {
-        return recipe.getIngredients().size();
+        return recipe.getIngredientList().size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

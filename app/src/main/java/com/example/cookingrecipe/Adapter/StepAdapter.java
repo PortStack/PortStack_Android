@@ -11,15 +11,18 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.cookingrecipe.Domain.DTO.CookOrdersDTO;
+import com.example.cookingrecipe.Domain.DTO.RecipeDTO;
 import com.example.cookingrecipe.Domain.Model.Recipe;
+import com.example.cookingrecipe.Domain.Model.RecipeOrder;
 import com.example.cookingrecipe.Domain.Model.Step;
 import com.example.cookingrecipe.R;
 
 
 public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
-    Recipe recipe;
+    RecipeDTO.Request recipe;
 
-    public StepAdapter(Recipe recipe) {
+    public StepAdapter(RecipeDTO.Request recipe) {
         this.recipe = recipe;
     }
 
@@ -33,17 +36,19 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull StepAdapter.ViewHolder holder, int position) {
 
-        if (recipe.getSteps() != null) {
-            Step step = recipe.getSteps().get(holder.getAdapterPosition());
-            holder.step_title.setText("단계" + step.getStep_order());
-            holder.step_text.setText(step.getDescription());
+        if (recipe.getCookOrderList() != null) {
+            RecipeOrder step = recipe.getCookOrderList().get(holder.getAdapterPosition());
+            holder.step_title.setText("단계" + step.getSequence());
+            holder.step_text.setText(step.getContent());
 
-            String imageUrl = recipe.getSteps().get(position).getImage();
+            String imageUrl = step.getOrderImageName();
             if (imageUrl != null && !imageUrl.isEmpty()) {
+                System.out.println("image");
                 Glide.with(holder.step_image.getContext())
-                        .load(imageUrl)
+                        .load("http://211.109.43.213:8081/images" + imageUrl)
                         .into(holder.step_image);
             } else {
+                System.out.println("none");
                 holder.step_image.setVisibility(View.GONE); // Ẩn ImageView nếu không có ảnh
 
             }
@@ -52,7 +57,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return recipe.getSteps().size();
+        return recipe.getCookOrderList().size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

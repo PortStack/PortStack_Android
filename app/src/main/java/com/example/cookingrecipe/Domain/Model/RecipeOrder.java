@@ -4,14 +4,14 @@ import android.net.Uri;
 
 public class RecipeOrder {
     int sequence;
-    String orderImageName;
+    String imageUrl;
     String content;
 
     public RecipeOrder(){}
 
     public RecipeOrder(int sequence, String orderImageName, String content){
         this.sequence = sequence;
-        this.orderImageName = orderImageName;
+        this.imageUrl = orderImageName;
         this.content = content;
     }
 
@@ -24,11 +24,11 @@ public class RecipeOrder {
     }
 
     public String getOrderImageName() {
-        return orderImageName;
+        return imageUrl;
     }
 
     public void setOrderImageName(String orderImageName){
-        this.orderImageName = orderImageName;
+        this.imageUrl = orderImageName;
     }
 
     public String getContent(){

@@ -7,13 +7,13 @@ public class IngredientDTO {
     @SerializedName("id")
     private int id;
 
-    @SerializedName("names")
+    @SerializedName("name")
     private String names;
 
-    @SerializedName("counts")
+    @SerializedName("count")
     private int counts;
 
-    @SerializedName("units")
+    @SerializedName("unit")
     private String units;
 
     public int getId() {
