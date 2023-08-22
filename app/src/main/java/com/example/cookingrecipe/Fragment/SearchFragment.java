@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cookingrecipe.Activity.DetailRecipeActivity;
 import com.example.cookingrecipe.Adapter.RecipeListAdapter;
+import com.example.cookingrecipe.Domain.DTO.RecipeDTO;
 import com.example.cookingrecipe.Domain.Model.Recipe;
 import com.example.cookingrecipe.Domain.Network.FirebaseRecipe;
 import com.example.cookingrecipe.Domain.Network.NetworkHelper;
@@ -80,7 +81,38 @@ public class SearchFragment extends Fragment {
         super.onResume();
          searchView.requestFocus();
     }
-
+//    public void searchRecipe(String text) {
+//        List<RecipeDTO.Request> searchList = new ArrayList<>();
+//        if (recipeList != null) {
+//            if (text != null) {
+//                for (Recipe recipe : recipeList) {
+//                    if (removeAccent(recipe.getTitle().toLowerCase())
+//                            .contains(removeAccent(text.toLowerCase()))) {
+//                        searchList.add(recipe);
+//                    }
+//                }
+//            } else {
+//                searchList = recipeList;
+//            }
+//
+//
+//            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+//            recyclerSearch = binding.recylerSearch;
+//            recyclerSearch.setLayoutManager(linearLayoutManager);
+//
+//            RecipeListAdapter recipeListAdapter = new RecipeListAdapter(searchList, AppDatabase.getInstance(this.getActivity()));
+//            recipeListAdapter.setOnItemClickListener(recipeId -> {
+//                Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
+//                intent.putExtra("recipeId", recipeId);
+//                startActivity(intent);
+//            });
+//            recipeListAdapter.setOnFavoriteIconClickListener((position, recipeId) -> {
+//            });
+//
+//            adapter = recipeListAdapter;
+//            recyclerSearch.setAdapter(adapter);
+//        }
+//    }
 
     public void searchRecipe(String text) {
         List<Recipe> searchList = new ArrayList<>();
