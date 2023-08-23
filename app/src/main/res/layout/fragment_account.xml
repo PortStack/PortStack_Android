@@ -44,14 +44,14 @@
         android:id="@+id/profile"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Tên người dùng"
+            android:text=""
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -103,7 +103,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="455"
+                        android:text=""
                         android:textAlignment="center"
                         android:textColor="@color/orange"
                         android:textSize="26sp"
@@ -113,7 +113,7 @@
                         android:id="@+id/followers"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Followers"
+                        android:text=""
                         android:textAlignment="center"
                         android:textColor="@color/orange"
                         android:textSize="16sp" />
@@ -136,11 +136,11 @@
                 android:padding="8dp">
 
                 <TextView
-                    android:id="@+id/username"
+                    android:id="@+id/nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="abc"
+                    android:text=""
                     android:textColor="@color/orange"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -150,7 +150,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="username"
+                    android:text="nickname"
                     android:textAlignment="viewEnd"
                     android:textColor="@color/orange"
                     android:textSize="18sp" />
@@ -172,6 +172,7 @@
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:background="@drawable/bg"
+            android:text="로그아웃"
             android:gravity="center"
             android:textColorHighlight="@color/orange"
             android:textColorLink="@color/orange"

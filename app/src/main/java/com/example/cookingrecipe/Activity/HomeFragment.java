@@ -81,7 +81,6 @@ public class HomeFragment extends Fragment {
         recyclerViewRecipeTodayList = binding.recyclerViewToday;
         recyclerViewRecipeTodayList.setLayoutManager(linearLayoutManager);
 
-        Log.d("RecipeTest", recipes.getItems().get(0).getThemNailUrl().toString());
         // 어댑터와 연결
         RecipeTodayAdapter recipeTodayAdapter = new RecipeTodayAdapter(recipeList);
         recipeTodayAdapter.setOnItemClickListener(recipeId -> {
@@ -95,6 +94,7 @@ public class HomeFragment extends Fragment {
 
 
 
+    //카테고리 뷰(이거 수정해서 서버에서 받아오도록 해야함
     private void recyclerViewCategory() {
 
         ArrayList<Type> typeList = new ArrayList<>();

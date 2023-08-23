@@ -4,6 +4,7 @@ package com.example.cookingrecipe.Activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,10 +62,10 @@ public class LoginActivity extends AppCompatActivity {
 
             Intent intent = new Intent(this, MainActivity.class);
             //로그인 요청
-            loginRequest(request,intent);
+            loginRequest(request,intent,this);
         }
     }
-    public void loginRequest(UserDTO.Request request,Intent intent){
+    public void loginRequest(UserDTO.Request request, Intent intent, Context context){
         RetrofitAPI retrofitAPI = RetrofitClient.getClient().create(RetrofitAPI.class);
         retrofitAPI.login(request).enqueue(new Callback<UserDTO.Response>() {
 
@@ -78,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     TokenUtil.setAccessToken(user.getAccessToken());
                     TokenUtil.setRefreshToken(user.getRefreshToken());
-                    ( (AuthConfig) getApplication() ).setNickName(user.getNickname());
+                    AuthConfig.setUserName(context,user.getNickname(),user.getAccount());
 
 
                     startActivity(intent);

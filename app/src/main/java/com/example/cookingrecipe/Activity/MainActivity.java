@@ -7,11 +7,13 @@ import androidx.fragment.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.cookingrecipe.Fragment.AccountFragment;
 import com.example.cookingrecipe.Fragment.FavoriteFragment;
 import com.example.cookingrecipe.Fragment.SearchFragment;
 import com.example.cookingrecipe.R;
+import com.example.cookingrecipe.Util.AuthConfig;
 import com.example.cookingrecipe.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -19,6 +21,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
 private BottomNavigationView bottomNavigationView;
+
+    private int selectedTabIndex = 0;
+
+    String nickname;
+    String userEmail;
     public MainActivity() {
     }
 
@@ -29,15 +36,28 @@ private BottomNavigationView bottomNavigationView;
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        //로그인 정보
+        nickname = AuthConfig.getUserName(this);
+        userEmail = AuthConfig.getEmail(this);
+
         replaceFragment(new HomeFragment());
         bottomNavigationView = binding.bottomNavigation;
         bottomNavigationView.setOnItemSelectedListener(item -> {
+
+
             if (item.getItemId() == R.id.home) {
                 replaceFragment(new HomeFragment());
             } else if (item.getItemId() == R.id.search) {
                 replaceFragment(new SearchFragment());
             } else if (item.getItemId() == R.id.insert) {
-                showOptionsDialog();
+                bottomNavigationView.getMenu().getItem(selectedTabIndex).setChecked(true);
+                if(nickname != "" && userEmail != ""){
+                    showOptionsDialog();
+                } else {
+                    Toast.makeText(this, "로그인 정보가 없습니다.", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+
             } else if (item.getItemId() == R.id.favorite) {
                 replaceFragment(new FavoriteFragment());
             } else if (item.getItemId() == R.id.account) {

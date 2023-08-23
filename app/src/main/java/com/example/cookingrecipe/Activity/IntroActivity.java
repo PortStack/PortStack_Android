@@ -47,9 +47,7 @@ public class IntroActivity extends AppCompatActivity {
 
     public static void verifyStoragePermissions(Activity activity) {
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        System.out.println("test123123");
         if (permission != PackageManager.PERMISSION_GRANTED) {
-            System.out.println("test123123");
             ActivityCompat.requestPermissions(
                     activity,
                     PERMISSIONS_STORAGE,
@@ -125,15 +123,11 @@ public class IntroActivity extends AppCompatActivity {
                 if(response.isSuccessful()){
                     UserDTO.Response user = response.body();
                     Log.d("Test",user.getAccessToken());
-//                    TokenUtil.setAccessToken(response.body().getAccessToken());
+                    TokenUtil.setAccessToken(response.body().getAccessToken());
 
-                    ( (AuthConfig) getApplication() ).setNickName(user.getNickname());
-                    ( (AuthConfig) getApplication() ).setAccessToken(user.getNickname());
 
-                    Log.d("TEST", "성공");
-                    Log.d("TEST",( (AuthConfig) getApplication() ).getNickName());
-                    Log.d("TEST", TokenUtil.getAccessToken("none"));
-                    Log.d("Test",TokenUtil.getRefreshToken("nine"));
+                    AuthConfig.setUserName(context,user.getNickname(),user.getEmail());
+
                     startActivitys(context,MainActivity.class);
                 }
             }
