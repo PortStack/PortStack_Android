@@ -45,7 +45,7 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 System.out.println("image");
                 Glide.with(holder.step_image.getContext())
-                        .load("http://211.109.43.213:8081/images" + imageUrl)
+                        .load("http://211.109.43.213:8081/" + imageUrl)
                         .into(holder.step_image);
             } else {
                 System.out.println("none");

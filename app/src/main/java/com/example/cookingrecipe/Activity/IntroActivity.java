@@ -108,7 +108,6 @@ public class IntroActivity extends AppCompatActivity {
             UserDTO.RefreshRequest request = new UserDTO.RefreshRequest();
             request.setRefreshToken(refreshToken);
 
-            Log.d("Test",request.getRefreshToken());
             getAccessToken(request,thisContext);
         }
 
@@ -122,7 +121,6 @@ public class IntroActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<UserDTO.Response> call, @NonNull Response<UserDTO.Response> response) {
                 if(response.isSuccessful()){
                     UserDTO.Response user = response.body();
-                    Log.d("Test",user.getAccessToken());
                     TokenUtil.setAccessToken(response.body().getAccessToken());
 
 

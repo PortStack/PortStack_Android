@@ -25,9 +25,6 @@ public class RecipeDTO {
         @SerializedName("modifiedDate")
         private String modifiedDate;
 
-        @SerializedName("tags")
-        private String tags;
-
         @SerializedName("themNailUrl")
         private String themNailUrl;
 
@@ -43,13 +40,16 @@ public class RecipeDTO {
         @SerializedName("cookOrderList")
         private List<RecipeOrder> cookOrderList;
 
+        @SerializedName("tags")
+        private List<TagDTO.Request> tags;
+
         public int getId() {return id;}
 
         public String getTitle() {return title;}
 
         public String getThemNailUrl() { return themNailUrl;}
 
-        public String getTags() { return tags;}
+        public List<TagDTO.Request> getTags() { return tags;}
 
         public String getNickname() {return nickname;}
 
@@ -93,7 +93,7 @@ public class RecipeDTO {
             this.likes = likes;
         }
 
-        public void setTags(String tags) { this.tags = tags;}
+        public void setTags(List<TagDTO.Request> tags) { this.tags = tags;}
         public void setIngredientList(List<IngredientDTO> ingredientList) {
             this.ingredientList = ingredientList;
         }

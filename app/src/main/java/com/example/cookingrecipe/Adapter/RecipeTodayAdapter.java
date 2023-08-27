@@ -57,7 +57,7 @@ RecipeTodayAdapter extends RecyclerView.Adapter<RecipeTodayAdapter.ViewHolder> {
 
         if (!imageURL.isBlank()) {
             Glide.with(holder.recipeImage.getContext())
-                    .load("http://211.109.43.213:8081/images" +imageURL)
+                    .load("http://211.109.43.213:8081/" +imageURL)
                     .into(holder.recipeImage);
         }
 

@@ -96,7 +96,7 @@ public class DetailRecipeActivity extends AppCompatActivity {
         String imageURL = recipe.getThemNailUrl();
         if (!imageURL.isBlank()) {
             Glide.with(recipe_image.getContext())
-                    .load("http://211.109.43.213:8081/images" +imageURL)
+                    .load("http://211.109.43.213:8081/" +imageURL)
                     .into(recipe_image);
         }
         titleTextView = findViewById(R.id.recipe_title);

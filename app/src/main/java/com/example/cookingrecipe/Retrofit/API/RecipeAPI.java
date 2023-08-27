@@ -4,6 +4,7 @@ package com.example.cookingrecipe.Retrofit.API;
 import com.example.cookingrecipe.Domain.DTO.CookOrdersDTO;
 import com.example.cookingrecipe.Domain.DTO.RecipeDTO;
 import com.example.cookingrecipe.Domain.DTO.RecipePageDTO;
+import com.example.cookingrecipe.Domain.DTO.TagDTO;
 
 import java.util.List;
 
@@ -28,14 +29,24 @@ public interface RecipeAPI {
             @Query("sort") String sort
     );
 
+    @GET("/recipe/category")
+    Call<TagDTO.List> getCategory(
+            @Query("page") int page,
+            @Query("size") int size,
+            @Query("sort") String sort
+    );
+
     @GET("/recipe/read/{id}")
     Call<RecipeDTO.Request> getRecipeDetail(
             @Path("id") int page
     );
 
+
+
     @Multipart
     @POST("/recipe/new")
     Call<ResponseBody> setNewRecipes(@Part("dto") RequestBody cookOrdersDTO, @Part List<MultipartBody.Part> orderImage, @Part List<MultipartBody.Part> themNail);
+
 
 }
 

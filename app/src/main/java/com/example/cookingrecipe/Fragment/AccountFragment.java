@@ -114,7 +114,6 @@ public class AccountFragment extends Fragment {
                 {
                     AuthConfig.clearUserName(getActivity());
                     TokenUtil.clearToken();
-                    getActivity().finish();
                     startActivity(new Intent(getActivity(), MainActivity.class));
                     Toast.makeText(getApplicationContext(), "로그아웃 되었습니다", Toast.LENGTH_SHORT).show();
                 }

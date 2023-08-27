@@ -19,6 +19,7 @@ import com.example.cookingrecipe.Adapter.CategoryAdapter;
 import com.example.cookingrecipe.Adapter.RecipeTodayAdapter;
 import com.example.cookingrecipe.Domain.DTO.RecipeDTO;
 import com.example.cookingrecipe.Domain.DTO.RecipePageDTO;
+import com.example.cookingrecipe.Domain.DTO.TagDTO;
 import com.example.cookingrecipe.Domain.DTO.UserDTO;
 import com.example.cookingrecipe.Domain.Model.Recipe;
 import com.example.cookingrecipe.Domain.Model.Type;
@@ -31,8 +32,10 @@ import com.example.cookingrecipe.Util.AuthConfig;
 import com.example.cookingrecipe.Util.TokenUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,6 +51,7 @@ public class HomeFragment extends Fragment {
     private ConstraintLayout searchButton;
     FragmentHomeBinding binding;
     RecipePageDTO recipes;
+    TagDTO.List tags;
 
     private NavController navController;
     @Override
@@ -59,11 +63,12 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-
-        recyclerViewCategory();
+//
+//        recyclerViewCategory();
 //        recyclerViewRecipeToday();
 
         getRecipe(0,10);
+        getCategory(0,10);
 
 
 
@@ -81,6 +86,7 @@ public class HomeFragment extends Fragment {
         recyclerViewRecipeTodayList = binding.recyclerViewToday;
         recyclerViewRecipeTodayList.setLayoutManager(linearLayoutManager);
 
+
         // 어댑터와 연결
         RecipeTodayAdapter recipeTodayAdapter = new RecipeTodayAdapter(recipeList);
         recipeTodayAdapter.setOnItemClickListener(recipeId -> {
@@ -88,6 +94,7 @@ public class HomeFragment extends Fragment {
             intent.putExtra("recipeId", recipeId);
             startActivity(intent);
         });
+
         adapter = recipeTodayAdapter;
         recyclerViewRecipeTodayList.setAdapter(adapter);
     }
@@ -95,19 +102,21 @@ public class HomeFragment extends Fragment {
 
 
     //카테고리 뷰(이거 수정해서 서버에서 받아오도록 해야함
-    private void recyclerViewCategory() {
+    private void recyclerViewCategory(List<TagDTO.Request> tags) {
 
-        ArrayList<Type> typeList = new ArrayList<>();
-        typeList.add(new Type(0, "item1", "dough"));
-        typeList.add(new Type(1, "item2", "dough"));
-        typeList.add(new Type(2, "item3", "dough"));
-        typeList.add(new Type(3, "item4", "dough"));
-        typeList.add(new Type(4, "item5", "dough"));
-        typeList.add(new Type(5, "item6", "dough"));
-        typeList.add(new Type(6, "item7", "dough"));
-        typeList.add(new Type(7, "item8", "dough"));
-        typeList.add(new Type(8, "item9", "dough"));
-        typeList.add(new Type(9, "item10", "dough"));
+        ArrayList<Type> typeList = tags.stream()
+                .map(tag -> new Type(tag.getId(), tag.getTag(), "dough"))
+                .collect(Collectors.toCollection(ArrayList::new));
+//        typeList.add(new Type(0, "item1", "dough"));
+//        typeList.add(new Type(1, "item2", "dough"));
+//        typeList.add(new Type(2, "item3", "dough"));
+//        typeList.add(new Type(3, "item4", "dough"));
+//        typeList.add(new Type(4, "item5", "dough"));
+//        typeList.add(new Type(5, "item6", "dough"));
+//        typeList.add(new Type(6, "item7", "dough"));
+//        typeList.add(new Type(7, "item8", "dough"));
+//        typeList.add(new Type(8, "item9", "dough"));
+//        typeList.add(new Type(9, "item10", "dough"));
         int totalItems = typeList.size();
         int spanCount = (totalItems % 2 == 0) ? totalItems / 2 : (totalItems / 2) + 1;
 
@@ -121,6 +130,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void getRecipe(int page, int size){
+
+        Log.d("RecipeRequest", "test");
+
         RecipeAPI recipeAPI = RetrofitClient.getClient().create(RecipeAPI.class);
         recipeAPI.getRecipes(page,size,"id,DESC").enqueue(new Callback<RecipePageDTO>() {
 
@@ -128,6 +140,8 @@ public class HomeFragment extends Fragment {
             public void onResponse(@NonNull Call<RecipePageDTO> call, @NonNull Response<RecipePageDTO> response) {
                 if(response.isSuccessful()){
                     recipes = response.body();
+
+                    Log.d("RecipeRequest", String.valueOf(recipes));
 
                     List<RecipeDTO.Request> recipeList = recipes.getItems();
 
@@ -138,7 +152,43 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onFailure(Call<RecipePageDTO> call, Throwable t) {
-                Log.d("Test",TokenUtil.getRefreshToken("실패"));
+                Log.d("Recipe",TokenUtil.getRefreshToken("실패"));
+                t.printStackTrace();
+            }
+
+        });
+    }
+
+    private void getCategory(int page, int size){
+
+        Log.d("TagService", "test");
+
+        RecipeAPI recipeAPI = RetrofitClient.getClient().create(RecipeAPI.class);
+        recipeAPI.getCategory(page,size,"id,DESC").enqueue(new Callback<TagDTO.List>() {
+
+            @Override
+            public void onResponse(@NonNull Call<TagDTO.List> call, @NonNull Response<TagDTO.List> response) {
+                if(response.isSuccessful()){
+                    try{
+                        tags = response.body();
+
+
+                        List<TagDTO.Request> tagList = tags.getItems();
+                        Log.d("TagService", tagList.get(0).getTag());
+                        recyclerViewCategory(tagList);
+                    }catch(Exception e){
+                        Log.e("TagService",e.toString());
+                    }
+
+////
+//
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TagDTO.List> call, Throwable t) {
+                Log.d("TagService",TokenUtil.getRefreshToken("실패"));
                 t.printStackTrace();
             }
 
