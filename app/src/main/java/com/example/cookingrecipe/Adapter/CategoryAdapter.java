@@ -13,12 +13,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.cookingrecipe.Domain.Model.Type;
+import com.example.cookingrecipe.OnItemClickListener;
 import com.example.cookingrecipe.R;
 
 import java.util.ArrayList;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
     ArrayList<Type> categories;
+
+    private OnItemClickListener listener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public CategoryAdapter(ArrayList<Type> categories) {
         this.categories = categories;
@@ -41,6 +48,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
                 .load(drawableResourceId)
                 .into(holder.categoryImage);
 
+        holder.itemView.setOnClickListener(view -> {
+            if (listener != null) {
+                listener.onItemClick(categories.get(position).getId());
+            }
+        });
+
     }
 
     @Override
@@ -58,6 +71,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             categoryName = itemView.findViewById(R.id.category_name);
             categoryImage = itemView.findViewById(R.id.category_image);
             mainLayout = itemView.findViewById(R.id.main_layout);
+
 
         }
     }

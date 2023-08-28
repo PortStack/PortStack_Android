@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -63,18 +64,19 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-
         getRecipe(0,10);
         getCategory(0,10);
 
 
-
         searchButton = binding.searchBtn;
-        searchButton.setOnClickListener(v -> openSearchFragment());
+        searchButton.setOnClickListener(v -> openSearchFragment(""));
         return view;
     }
 
-    public void openSearchFragment() {
+    public void openSearchFragment(String searchInput) {
+        if (getActivity() instanceof MainActivity && searchInput!= null) {
+            ((MainActivity) getActivity()).setSearchData(searchInput);
+        }
         BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.search);
     }
@@ -96,24 +98,14 @@ public class HomeFragment extends Fragment {
         recyclerViewRecipeTodayList.setAdapter(adapter);
     }
 
-
-
     //카테고리 뷰(이거 수정해서 서버에서 받아오도록 해야함
     private void recyclerViewCategory(List<TagDTO.Request> tags) {
 
-        ArrayList<Type> typeList = tags.stream()
-                .map(tag -> new Type(tag.getId(), tag.getTag(), "dough"))
+
+        ArrayList<Type> typeList = IntStream.range(0, tags.size())
+                .mapToObj(i -> new Type(i, tags.get(i).getTag(), "dough"))
                 .collect(Collectors.toCollection(ArrayList::new));
-//        typeList.add(new Type(0, "item1", "dough"));
-//        typeList.add(new Type(1, "item2", "dough"));
-//        typeList.add(new Type(2, "item3", "dough"));
-//        typeList.add(new Type(3, "item4", "dough"));
-//        typeList.add(new Type(4, "item5", "dough"));
-//        typeList.add(new Type(5, "item6", "dough"));
-//        typeList.add(new Type(6, "item7", "dough"));
-//        typeList.add(new Type(7, "item8", "dough"));
-//        typeList.add(new Type(8, "item9", "dough"));
-//        typeList.add(new Type(9, "item10", "dough"));
+
         int totalItems = typeList.size();
         int spanCount = (totalItems % 2 == 0) ? totalItems / 2 : (totalItems / 2) + 1;
 
@@ -122,7 +114,41 @@ public class HomeFragment extends Fragment {
         recyclerViewCategoryList = binding.recyclerViewCategory;
         recyclerViewCategoryList.setLayoutManager(gridLayoutManager);
 
-        adapter = new CategoryAdapter(typeList);
+        CategoryAdapter categoryAdapter = new CategoryAdapter(typeList);
+        categoryAdapter.setOnItemClickListener(tag -> {
+            openSearchFragment(tags.get(tag).getTag());
+        });
+
+
+        adapter = categoryAdapter;
+        recyclerViewCategoryList.setAdapter(adapter);
+    }
+
+    //카테고리 뷰(이거 수정해서 서버에서 받아오도록 해야함
+    private void recyclerViewCategoryTest() {
+
+        ArrayList<Type> typeList = new ArrayList<>();
+
+        typeList.add(new Type(0,"item1","dough"));
+        typeList.add(new Type(1,"item1","dough"));
+        typeList.add(new Type(2,"item1","dough"));
+        typeList.add(new Type(3,"item1","dough"));
+
+        int totalItems = typeList.size();
+        int spanCount = (totalItems % 2 == 0) ? totalItems / 2 : (totalItems / 2) + 1;
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
+
+        recyclerViewCategoryList = binding.recyclerViewCategory;
+        recyclerViewCategoryList.setLayoutManager(gridLayoutManager);
+
+        CategoryAdapter categoryAdapter = new CategoryAdapter(typeList);
+        categoryAdapter.setOnItemClickListener(tag -> {
+            openSearchFragment(typeList.get(tag).getTitle());
+        });
+
+
+        adapter = categoryAdapter;
         recyclerViewCategoryList.setAdapter(adapter);
     }
 
@@ -169,17 +195,12 @@ public class HomeFragment extends Fragment {
                     try{
                         tags = response.body();
 
-
                         List<TagDTO.Request> tagList = tags.getItems();
                         Log.d("TagService", tagList.get(0).getTag());
                         recyclerViewCategory(tagList);
                     }catch(Exception e){
                         Log.e("TagService",e.toString());
                     }
-
-////
-//
-
                 }
             }
 

@@ -2,6 +2,7 @@ package com.example.cookingrecipe.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +31,13 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
-public class SearchFragment extends Fragment {
-    FragmentSearchBinding binding;
 
+
+public class SearchFragment extends Fragment {
+
+    private static final String ARG_SEARCH_DATA = "search_data";
+    FragmentSearchBinding binding;
+    String searchData;
     private RecyclerView.Adapter adapter;
     SearchView searchView;
     List<Recipe> recipeList;
@@ -48,12 +53,23 @@ public class SearchFragment extends Fragment {
 
     }
 
+    public static SearchFragment newInstance(String searchData) {
+        SearchFragment fragment = new SearchFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_SEARCH_DATA, searchData);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentSearchBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+
+        Bundle args = getArguments();
+
 
         searchView = binding.search;
         recyclerSearch = binding.recylerSearch;
@@ -72,7 +88,12 @@ public class SearchFragment extends Fragment {
             }
         });
 
-
+        if (args != null) {
+            searchData = args.getString(ARG_SEARCH_DATA);
+            searchView.setQuery(searchData, false);
+            Log.e("Search Data",searchData);
+            // searchData를 사용하여 작업 처리
+        }
         return view;
     }
     @Override
@@ -80,38 +101,6 @@ public class SearchFragment extends Fragment {
         super.onResume();
          searchView.requestFocus();
     }
-//    public void searchRecipe(String text) {
-//        List<RecipeDTO.Request> searchList = new ArrayList<>();
-//        if (recipeList != null) {
-//            if (text != null) {
-//                for (Recipe recipe : recipeList) {
-//                    if (removeAccent(recipe.getTitle().toLowerCase())
-//                            .contains(removeAccent(text.toLowerCase()))) {
-//                        searchList.add(recipe);
-//                    }
-//                }
-//            } else {
-//                searchList = recipeList;
-//            }
-//
-//
-//            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-//            recyclerSearch = binding.recylerSearch;
-//            recyclerSearch.setLayoutManager(linearLayoutManager);
-//
-//            RecipeListAdapter recipeListAdapter = new RecipeListAdapter(searchList, AppDatabase.getInstance(this.getActivity()));
-//            recipeListAdapter.setOnItemClickListener(recipeId -> {
-//                Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
-//                intent.putExtra("recipeId", recipeId);
-//                startActivity(intent);
-//            });
-//            recipeListAdapter.setOnFavoriteIconClickListener((position, recipeId) -> {
-//            });
-//
-//            adapter = recipeListAdapter;
-//            recyclerSearch.setAdapter(adapter);
-//        }
-//    }
 
     public void searchRecipe(String text) {
         List<Recipe> searchList = new ArrayList<>();

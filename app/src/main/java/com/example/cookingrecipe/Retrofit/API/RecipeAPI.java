@@ -41,8 +41,6 @@ public interface RecipeAPI {
             @Path("id") int page
     );
 
-
-
     @Multipart
     @POST("/recipe/new")
     Call<ResponseBody> setNewRecipes(@Part("dto") RequestBody cookOrdersDTO, @Part List<MultipartBody.Part> orderImage, @Part List<MultipartBody.Part> themNail);

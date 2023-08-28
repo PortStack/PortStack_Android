@@ -21,7 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
 private BottomNavigationView bottomNavigationView;
-
+    private String searchData;
     private int selectedTabIndex = 0;
 
     String nickname;
@@ -47,10 +47,17 @@ private BottomNavigationView bottomNavigationView;
 
             if (item.getItemId() == R.id.home) {
                 replaceFragment(new HomeFragment());
+                setSearchData(null);
             } else if (item.getItemId() == R.id.search) {
-                replaceFragment(new SearchFragment());
+                if (searchData != null) {
+                    replaceFragment(SearchFragment.newInstance(searchData));
+                    searchData = null; // 데이터 사용 후 초기화
+                } else {
+                    replaceFragment(new SearchFragment());
+                }
             } else if (item.getItemId() == R.id.insert) {
                 bottomNavigationView.getMenu().getItem(selectedTabIndex).setChecked(true);
+                setSearchData(null);
                 if(nickname != "" && userEmail != ""){
                     showOptionsDialog();
                 } else {
@@ -59,12 +66,18 @@ private BottomNavigationView bottomNavigationView;
                 }
 
             } else if (item.getItemId() == R.id.favorite) {
+                setSearchData(null);
                 replaceFragment(new FavoriteFragment());
             } else if (item.getItemId() == R.id.account) {
+                setSearchData(null);
                 replaceFragment(new AccountFragment());
             }
             return true;
         });
+    }
+
+    public void setSearchData(String searchData) {
+        this.searchData = searchData;
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -82,10 +95,6 @@ private BottomNavigationView bottomNavigationView;
                                 addRecipe();
                                 break;
                             case 1:
-                                // Handle "게시글 등록하기" action
-                                addPost();
-                                break;
-                            case 2:
                                 // Handle "취소" action
                                 dialog.dismiss();
                                 break;
@@ -103,12 +112,6 @@ private BottomNavigationView bottomNavigationView;
         // For example, start a new activity or show a fragment for recipe addition
         startActivity(new Intent(MainActivity.this, RecipeAddActivity.class));
     }
-
-    private void addPost() {
-        // Perform the necessary actions for adding a post
-        // For example, start a new activity or show a fragment for post addition
-    }
-
 
 
 }
