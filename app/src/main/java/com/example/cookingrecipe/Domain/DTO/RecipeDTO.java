@@ -25,6 +25,9 @@ public class RecipeDTO {
         @SerializedName("modifiedDate")
         private String modifiedDate;
 
+        @SerializedName("likeState")
+        private boolean likeState;
+
         @SerializedName("themNailUrl")
         private String themNailUrl;
 
@@ -78,6 +81,10 @@ public class RecipeDTO {
 
         public void setTitle(String title) {
             this.title = title;
+        }
+
+        public boolean getLikeState() {
+            return likeState;
         }
 
         public void setNickname(String nickname) {

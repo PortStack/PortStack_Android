@@ -1,5 +1,5 @@
 package com.example.cookingrecipe;
 
 public interface OnFavoriteIconClickListener {
-    void onIconClick(String itemId,Boolean isFavorite);
+    void onIconClick(int itemId,Boolean isFavorite);
 }

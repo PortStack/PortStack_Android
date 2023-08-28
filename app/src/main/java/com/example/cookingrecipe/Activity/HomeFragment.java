@@ -154,8 +154,6 @@ public class HomeFragment extends Fragment {
 
     private void getRecipe(int page, int size){
 
-        Log.d("RecipeRequest", "test");
-
         RecipeAPI recipeAPI = RetrofitClient.getClient().create(RecipeAPI.class);
         recipeAPI.getRecipes(page,size,"id,DESC").enqueue(new Callback<RecipePageDTO>() {
 
@@ -175,7 +173,8 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onFailure(Call<RecipePageDTO> call, Throwable t) {
-                Log.d("Recipe",TokenUtil.getRefreshToken("실패"));
+                Log.d("RecipeRequest","error");
+
                 t.printStackTrace();
             }
 

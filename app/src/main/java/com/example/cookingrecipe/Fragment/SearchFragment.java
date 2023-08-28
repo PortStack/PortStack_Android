@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,11 +16,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cookingrecipe.Activity.DetailRecipeActivity;
 import com.example.cookingrecipe.Adapter.RecipeListAdapter;
 
+import com.example.cookingrecipe.Domain.DTO.RecipeDTO;
+import com.example.cookingrecipe.Domain.DTO.RecipePageDTO;
 import com.example.cookingrecipe.Domain.Model.Recipe;
 
+import com.example.cookingrecipe.Retrofit.API.RecipeAPI;
+import com.example.cookingrecipe.Retrofit.RetrofitClient;
 import com.example.cookingrecipe.Room.AppDatabase;
 import com.example.cookingrecipe.Room.DAO.RecipeDao;
 import com.example.cookingrecipe.Room.Entity.RecipeEntity;
+import com.example.cookingrecipe.Util.TokenUtil;
 import com.example.cookingrecipe.databinding.FragmentSearchBinding;
 
 import java.text.Normalizer;
@@ -31,6 +37,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class SearchFragment extends Fragment {
@@ -74,7 +83,7 @@ public class SearchFragment extends Fragment {
         searchView = binding.search;
         recyclerSearch = binding.recylerSearch;
 
-        showRecipe();
+        requestRecipe();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -103,46 +112,38 @@ public class SearchFragment extends Fragment {
     }
 
     public void searchRecipe(String text) {
-        List<Recipe> searchList = new ArrayList<>();
-        if (recipeList != null) {
-            if (text != null) {
-                for (Recipe recipe : recipeList) {
-                    if (removeAccent(recipe.getTitle().toLowerCase())
-                            .contains(removeAccent(text.toLowerCase()))) {
-                        searchList.add(recipe);
-                    }
+        RecipeAPI recipeAPI = RetrofitClient.getClient().create(RecipeAPI.class);
+        recipeAPI.search(text).enqueue(new Callback<RecipePageDTO>() {
+
+            @Override
+            public void onResponse(@NonNull Call<RecipePageDTO> call, @NonNull Response<RecipePageDTO> response) {
+                if(response.isSuccessful()){
+                    RecipePageDTO recipes = response.body();
+
+                    Log.d("RecipeRequest", String.valueOf(recipes));
+
+                    List<RecipeDTO.Request> recipeList = recipes.getItems();
+
+                    showRecipe(recipeList);
+
                 }
-            } else {
-                searchList = recipeList;
             }
 
+            @Override
+            public void onFailure(Call<RecipePageDTO> call, Throwable t) {
+                Log.d("Recipe", TokenUtil.getRefreshToken("실패"));
+                t.printStackTrace();
+            }
 
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-            recyclerSearch = binding.recylerSearch;
-            recyclerSearch.setLayoutManager(linearLayoutManager);
-
-            RecipeListAdapter recipeListAdapter = new RecipeListAdapter(searchList, AppDatabase.getInstance(this.getActivity()));
-            recipeListAdapter.setOnItemClickListener(recipeId -> {
-                Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
-                intent.putExtra("recipeId", recipeId);
-                startActivity(intent);
-            });
-            recipeListAdapter.setOnFavoriteIconClickListener((position, recipeId) -> {
-            });
-
-            adapter = recipeListAdapter;
-            recyclerSearch.setAdapter(adapter);
-        }
+        });
     }
 
-    public void showRecipe() {
-        AppDatabase db = AppDatabase.getInstance(this.getActivity());
-        RecipeDao recipeDao = db.recipeDao();
-        List<Recipe> recipeList = new RecipeEntity().toRecipeList(recipeDao.getAll());
+    public void showRecipe(List<RecipeDTO.Request> recipeList) {
+
 
         if (recipeList != null) {
-            Set<Recipe> showSet = new HashSet<>();
-            for (Recipe recipe : recipeList) {
+            Set<RecipeDTO.Request> showSet = new HashSet<>();
+            for (RecipeDTO.Request recipe : recipeList) {
                 if (showSet.size() < 12) {
                     showSet.add(recipe);
                 } else {
@@ -150,12 +151,12 @@ public class SearchFragment extends Fragment {
                 }
             }
 
-            List<Recipe> showList = new ArrayList<>(showSet);
+            List<RecipeDTO.Request> showList = new ArrayList<>(showSet);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
             recyclerSearch = binding.recylerSearch;
             recyclerSearch.setLayoutManager(linearLayoutManager);
 
-            RecipeListAdapter recipeListAdapter = new RecipeListAdapter(showList, db);
+            RecipeListAdapter recipeListAdapter = new RecipeListAdapter(showList);
             recipeListAdapter.setOnItemClickListener(recipeId -> {
                 Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
                 intent.putExtra("recipeId", recipeId);
@@ -170,6 +171,32 @@ public class SearchFragment extends Fragment {
         }
     }
 
+    public void requestRecipe(){
+        RecipeAPI recipeAPI = RetrofitClient.getClient().create(RecipeAPI.class);
+        recipeAPI.getRecipes(0,10,"id,DESC").enqueue(new Callback<RecipePageDTO>() {
+
+            @Override
+            public void onResponse(@NonNull Call<RecipePageDTO> call, @NonNull Response<RecipePageDTO> response) {
+                if(response.isSuccessful()){
+                    RecipePageDTO recipes = response.body();
+
+                    Log.d("RecipeRequest", String.valueOf(recipes));
+
+                    List<RecipeDTO.Request> recipeList = recipes.getItems();
+
+                    showRecipe(recipeList);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RecipePageDTO> call, Throwable t) {
+                Log.d("Recipe", TokenUtil.getRefreshToken("실패"));
+                t.printStackTrace();
+            }
+
+        });
+    }
 
     private String removeAccent(String s) {
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");

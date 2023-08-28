@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.cookingrecipe.Domain.DTO.RecipeDTO;
 import com.example.cookingrecipe.Domain.Model.Recipe;
 import com.example.cookingrecipe.OnFavoriteIconClickListener;
 import com.example.cookingrecipe.OnItemClickListener;
@@ -22,8 +23,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.ViewHolder> {
-    List<Recipe> recipeList;
+    List<RecipeDTO.Request> recipeList;
     AppDatabase db;
+
+    Boolean isFavorite;
     private OnItemClickListener itemClickListener;
     private OnFavoriteIconClickListener favoriteIconClickListener;
 
@@ -36,9 +39,8 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
         this.favoriteIconClickListener = listener;
     }
 
-    public RecipeListAdapter(List<Recipe> recipeList, AppDatabase db) {
+    public RecipeListAdapter(List<RecipeDTO.Request> recipeList) {
         this.recipeList = recipeList;
-        this.db = db;
     }
 
     @NonNull
@@ -51,40 +53,40 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull RecipeListAdapter.ViewHolder holder, int position) {
-        Recipe recipe = recipeList.get(holder.getAdapterPosition());
-        RecipeDao recipeDao = db.recipeDao();
-        AtomicReference<Boolean> isFavorite = new AtomicReference<>(recipeDao.getById(recipe.getId()) != null);
-        if (isFavorite.get()) {
+        RecipeDTO.Request recipe = recipeList.get(holder.getAdapterPosition());
+        isFavorite = recipe.getLikeState();
+        if (isFavorite) {
             holder.icon_favorite.setImageResource(R.drawable.ic_favorite_fill);
         } else {
             holder.icon_favorite.setImageResource(R.drawable.ic_favorite);
         }
 
         holder.titleFavorite.setText(recipe.getTitle());
-        holder.descriptionFavorite.setText(recipe.getDescription());
+        holder.descriptionFavorite.setText(recipe.getTitle());
 
-        String imageURL = recipe.getImage();
+        String imageURL = recipe.getThemNailUrl();
         if (!imageURL.isBlank()) {
             Glide.with(holder.imageFavorite.getContext())
-                    .load(imageURL)
+                    .load("http://1.253.239.80:8080/" + imageURL)
                     .into(holder.imageFavorite);
         }
 
         holder.click_area.setOnClickListener(view -> {
             if (itemClickListener != null) {
-                itemClickListener.onItemClick(Integer.parseInt(recipe.getId()));
+                itemClickListener.onItemClick(recipe.getId());
             }
         });
 
         holder.icon_favorite.setOnClickListener(view -> {
             if (favoriteIconClickListener != null) {
-                if (isFavorite.get()) {
-                    isFavorite.set(false);
-                    recipeDao.delete(recipe.toRecipeEntity());
+                if (isFavorite) {
+                    isFavorite = false;
+                    // 좋아요 취소 기능
+//                    recipeDao.delete(recipe.toRecipeEntity());
                     holder.icon_favorite.setImageResource(R.drawable.ic_favorite);
                 } else {
-                    isFavorite.set(true);
-                    recipeDao.insert(recipe.toRecipeEntity());
+                    isFavorite = true;
+                    //좋아요 기능
                     holder.icon_favorite.setImageResource(R.drawable.ic_favorite_fill);
                 }
                 favoriteIconClickListener.onIconClick(recipe.getId(), true);

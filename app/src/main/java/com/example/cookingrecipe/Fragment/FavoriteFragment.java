@@ -42,32 +42,32 @@ public class FavoriteFragment extends Fragment {
         binding = FragmentFavoriteBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        setRecyclerViewRecipeFavorite();
+//        setRecyclerViewRecipeFavorite();
 
 
         return view;
 
     }
 
-    private void setRecyclerViewRecipeFavorite() {
-        AppDatabase db = AppDatabase.getInstance(this.getActivity());
-        RecipeDao recipeDao = db.recipeDao();
-        List<Recipe> recipeList = new RecipeEntity().toRecipeList(recipeDao.getAll());
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerViewRecipeFavorite = binding.recylerFavorite;
-        recyclerViewRecipeFavorite.setLayoutManager(linearLayoutManager);
-        RecipeListAdapter recipeListAdapter = new RecipeListAdapter(recipeList, db);
-        recipeListAdapter.setOnItemClickListener(recipeId -> {
-            Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
-            intent.putExtra("recipeId", recipeId);
-            startActivity(intent);
-        });
-        recipeListAdapter.setOnFavoriteIconClickListener((position, recipeId) -> {
-        });
-
-        adapter = recipeListAdapter;
-        recyclerViewRecipeFavorite.setAdapter(adapter);
-
-
-    }
+//    private void setRecyclerViewRecipeFavorite() {
+//        AppDatabase db = AppDatabase.getInstance(this.getActivity());
+//        RecipeDao recipeDao = db.recipeDao();
+//        List<Recipe> recipeList = new RecipeEntity().toRecipeList(recipeDao.getAll());
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+//        recyclerViewRecipeFavorite = binding.recylerFavorite;
+//        recyclerViewRecipeFavorite.setLayoutManager(linearLayoutManager);
+//        RecipeListAdapter recipeListAdapter = new RecipeListAdapter(recipeList);
+//        recipeListAdapter.setOnItemClickListener(recipeId -> {
+//            Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
+//            intent.putExtra("recipeId", recipeId);
+//            startActivity(intent);
+//        });
+//        recipeListAdapter.setOnFavoriteIconClickListener((position, recipeId) -> {
+//        });
+//
+//        adapter = recipeListAdapter;
+//        recyclerViewRecipeFavorite.setAdapter(adapter);
+//
+//
+//    }
 }
