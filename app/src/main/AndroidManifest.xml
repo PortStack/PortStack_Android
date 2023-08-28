@@ -34,15 +34,7 @@
             android:exported="false"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.CookingRecipe.Fullscreen" />
-        <activity
-            android:name=".Activity.GoogleLoginActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
         <activity
             android:name=".Activity.DetailRecipeActivity"

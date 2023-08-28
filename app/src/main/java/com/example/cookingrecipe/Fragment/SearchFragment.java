@@ -13,10 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cookingrecipe.Activity.DetailRecipeActivity;
 import com.example.cookingrecipe.Adapter.RecipeListAdapter;
-import com.example.cookingrecipe.Domain.DTO.RecipeDTO;
+
 import com.example.cookingrecipe.Domain.Model.Recipe;
-import com.example.cookingrecipe.Domain.Network.FirebaseRecipe;
-import com.example.cookingrecipe.Domain.Network.NetworkHelper;
+
 import com.example.cookingrecipe.Room.AppDatabase;
 import com.example.cookingrecipe.Room.DAO.RecipeDao;
 import com.example.cookingrecipe.Room.Entity.RecipeEntity;
@@ -148,78 +147,40 @@ public class SearchFragment extends Fragment {
     }
 
     public void showRecipe() {
-        List<Recipe> showList1 = new ArrayList<>();
-        AtomicInteger i = new AtomicInteger();
-        if (NetworkHelper.isNetworkConnected(this.getActivity())) {
-            new FirebaseRecipe().getAllRecipe(list -> {
-                recipeList = list;
+        AppDatabase db = AppDatabase.getInstance(this.getActivity());
+        RecipeDao recipeDao = db.recipeDao();
+        List<Recipe> recipeList = new RecipeEntity().toRecipeList(recipeDao.getAll());
 
-                isFirebaseDataLoaded = true;
-
-                if (recipeList != null) {
-                    Set<Recipe> showSet = new HashSet<>();
-                    for (Recipe recipe : recipeList) {
-                        if (showSet.size() < 12) {
-                            showSet.add(recipe);
-                        } else {
-                            break;
-                        }
-                    }
-
-                    List<Recipe> showList = new ArrayList<>(showSet);
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                    recyclerSearch = binding.recylerSearch;
-                    recyclerSearch.setLayoutManager(linearLayoutManager);
-
-                    RecipeListAdapter recipeListAdapter = new RecipeListAdapter(showList, AppDatabase.getInstance(this.getActivity()));
-                    recipeListAdapter.setOnItemClickListener(recipeId -> {
-                        Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
-                        intent.putExtra("recipeId", recipeId);
-                        startActivity(intent);
-                    });
-                    recipeListAdapter.setOnFavoriteIconClickListener((position, recipeId) -> {
-                    });
-
-                    adapter = recipeListAdapter;
-                    recyclerSearch.setAdapter(adapter);
+        if (recipeList != null) {
+            Set<Recipe> showSet = new HashSet<>();
+            for (Recipe recipe : recipeList) {
+                if (showSet.size() < 12) {
+                    showSet.add(recipe);
+                } else {
+                    break;
                 }
-            });
-        } else {
-            AppDatabase db = AppDatabase.getInstance(this.getActivity());
-            RecipeDao recipeDao = db.recipeDao();
-            recipeList = new RecipeEntity().toRecipeList(recipeDao.getAll());
-            isLocalDataLoaded = true;
-
-            if (recipeList != null) {
-                Set<Recipe> showSet = new HashSet<>();
-                for (Recipe recipe : recipeList) {
-                    if (showSet.size() < 12) {
-                        showSet.add(recipe);
-                    } else {
-                        break;
-                    }
-                }
-
-                List<Recipe> showList = new ArrayList<>(showSet);
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                recyclerSearch = binding.recylerSearch;
-                recyclerSearch.setLayoutManager(linearLayoutManager);
-
-                RecipeListAdapter recipeListAdapter = new RecipeListAdapter(showList, AppDatabase.getInstance(this.getActivity()));
-                recipeListAdapter.setOnItemClickListener(recipeId -> {
-                    Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
-                    intent.putExtra("recipeId", recipeId);
-                    startActivity(intent);
-                });
-                recipeListAdapter.setOnFavoriteIconClickListener((position, recipeId) -> {
-                });
-
-                adapter = recipeListAdapter;
-                recyclerSearch.setAdapter(adapter);
             }
-        }
 
+            List<Recipe> showList = new ArrayList<>(showSet);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+            recyclerSearch = binding.recylerSearch;
+            recyclerSearch.setLayoutManager(linearLayoutManager);
+
+            RecipeListAdapter recipeListAdapter = new RecipeListAdapter(showList, db);
+            recipeListAdapter.setOnItemClickListener(recipeId -> {
+                Intent intent = new Intent(getActivity(), DetailRecipeActivity.class);
+                intent.putExtra("recipeId", recipeId);
+                startActivity(intent);
+            });
+            recipeListAdapter.setOnFavoriteIconClickListener((position, recipeId) -> {
+                // 즐겨찾기 아이콘 클릭 시 동작 정의
+            });
+
+            adapter = recipeListAdapter;
+            recyclerSearch.setAdapter(adapter);
+        }
     }
+
 
     private String removeAccent(String s) {
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");

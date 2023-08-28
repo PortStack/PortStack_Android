@@ -1,5 +1,6 @@
 package com.example.cookingrecipe.Retrofit.API;
 
+import com.example.cookingrecipe.Domain.DTO.RegisterDTO;
 import com.example.cookingrecipe.Domain.DTO.UserDTO;
 
 import retrofit2.Call;
@@ -12,5 +13,8 @@ public interface RetrofitAPI {
 
     @POST("/auth/refreshToken")
     Call<UserDTO.Response> getAccessToken(@Body UserDTO.RefreshRequest refreshToken);
+
+
+    Call<UserDTO.Response> register(@Body RegisterDTO.Request registerRequest);
 
 }
