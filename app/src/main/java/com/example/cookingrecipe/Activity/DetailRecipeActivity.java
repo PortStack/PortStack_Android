@@ -14,12 +14,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.cookingrecipe.Adapter.CommentAdapter;
 import com.example.cookingrecipe.Adapter.IngredientAdapter;
 import com.example.cookingrecipe.Adapter.StepAdapter;
+import com.example.cookingrecipe.Domain.DTO.CommentDTO;
 import com.example.cookingrecipe.Domain.DTO.CookOrdersDTO;
 import com.example.cookingrecipe.Domain.DTO.IngredientDTO;
 import com.example.cookingrecipe.Domain.DTO.RecipeDTO;
@@ -31,6 +35,7 @@ import com.example.cookingrecipe.Domain.Model.Step;
 
 import com.example.cookingrecipe.R;
 import com.example.cookingrecipe.Retrofit.API.RecipeAPI;
+import com.example.cookingrecipe.Retrofit.API.RetrofitAPI;
 import com.example.cookingrecipe.Retrofit.RetrofitClient;
 import com.example.cookingrecipe.Room.AppDatabase;
 import com.example.cookingrecipe.Room.DAO.RecipeDao;
@@ -59,6 +64,15 @@ public class DetailRecipeActivity extends AppCompatActivity {
     private ImageView recipe_image;
     private RecipeDTO.Request recipe;
 
+    private RecyclerView commentRecyclerView;
+    private CommentAdapter commentAdapter;
+
+    private EditText commentEditText;
+
+    private Button commentButton;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,14 +94,23 @@ public class DetailRecipeActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         toolbar.setOnMenuItemClickListener(this::onNavigationItemSelected);
 
-//        if (NetworkHelper.isNetworkConnected(this)) {
-//            new FirebaseRecipe().getRecipeById(recipeId, recipe -> {
-//                showDetailRecipe(recipe);
-//            });
-//        } else {
-//            Recipe recipe = recipeDao.getById(recipeId).toRecipe();
-//            showDetailRecipe(recipe);
-//        }
+
+
+        loadComments();
+
+        commentEditText = findViewById(R.id.commentEditText);
+        commentButton = findViewById(R.id.commentButton);
+
+        commentButton.setOnClickListener(v -> {
+            String commentContent = commentEditText.getText().toString().trim();
+            if (!commentContent.isEmpty()) {
+                // 댓글 작성 요청을 서버로 전송하는 코드 작성
+                sendComment(commentContent);
+            }
+        });
+
+
+
     }
 
     public void showDetailRecipe(RecipeDTO.Request recipe) {
@@ -95,7 +118,7 @@ public class DetailRecipeActivity extends AppCompatActivity {
         String imageURL = recipe.getThemNailUrl();
         if (!imageURL.isBlank()) {
             Glide.with(recipe_image.getContext())
-                    .load("http://211.109.43.213:8081/" +imageURL)
+                    .load("http://1.253.239.80:8080/" +imageURL)
                     .into(recipe_image);
         }
         titleTextView = findViewById(R.id.recipe_title);
@@ -128,8 +151,6 @@ public class DetailRecipeActivity extends AppCompatActivity {
 //                    + "종류: " + s + "\n"
                     + "재료:\n" + getIngredientsText(recipe.getIngredientList()) + "\n"
                     + "조리단계:\n" + getStepsText(recipe.getCookOrderList());
-
-            // Tạo Intent chia sẻ
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
@@ -234,6 +255,7 @@ public class DetailRecipeActivity extends AppCompatActivity {
                     recipe = response.body();
                     showDetailRecipe(recipe);
                     Log.e("recipeTest",recipe.getTitle());
+                    initCommentRecyclerView(recipe.getComments());
                 }
             }
 
@@ -244,5 +266,61 @@ public class DetailRecipeActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    private void sendComment(String commentContent) {
+        CommentDTO commentDTO = new CommentDTO("YourNickname", commentContent); // 댓글 작성자의 닉네임을 설정
+
+        RetrofitAPI retrofitAPI = RetrofitClient.getClient().create(RetrofitAPI.class);
+        retrofitAPI.addComment(commentDTO).enqueue(new Callback<CommentDTO>() {
+            @Override
+            public void onResponse(Call<CommentDTO> call, Response<CommentDTO> response) {
+                if (response.isSuccessful()) {
+                    CommentDTO addedComment = response.body();
+                    // 추가된 댓글을 RecyclerView에 추가하는 코드를 구현해야 함
+                    commentAdapter.addComment(addedComment);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CommentDTO> call, Throwable t) {
+                // 댓글 작성 실패 처리
+                t.printStackTrace();
+            }
+        });
+
+        // 댓글 작성 후 입력란 초기화
+        commentEditText.setText("");
+    }
+    private void loadComments() {
+        RetrofitAPI retrofitAPI = RetrofitClient.getClient().create(RetrofitAPI.class);
+
+        // 서버로부터 댓글 목록을 가져오는 Retrofit 호출
+        retrofitAPI.getComments().enqueue(new Callback<List<CommentDTO>>() {
+            @Override
+            public void onResponse(Call<List<CommentDTO>> call, Response<List<CommentDTO>> response) {
+                if (response.isSuccessful()) {
+                    List<CommentDTO> comments = response.body();
+
+                    // CommentAdapter 초기화 및 RecyclerView에 설정
+                    initCommentRecyclerView(comments);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<CommentDTO>> call, Throwable t) {
+                // 실패 시 처리
+                t.printStackTrace();
+            }
+        });
+    }
+
+
+    private void initCommentRecyclerView(List<CommentDTO> comments) {
+        commentAdapter = new CommentAdapter(comments);
+        commentRecyclerView = findViewById(R.id.commentRecyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        commentRecyclerView.setLayoutManager(layoutManager);
+        commentRecyclerView.setAdapter(commentAdapter);
     }
 }

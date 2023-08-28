@@ -43,11 +43,18 @@ public class RecipeDTO {
         @SerializedName("tags")
         private List<TagDTO.Request> tags;
 
+        @SerializedName("comments")
+        private List<CommentDTO> comments;
+
         public int getId() {return id;}
 
         public String getTitle() {return title;}
 
         public String getThemNailUrl() { return themNailUrl;}
+
+        public List<CommentDTO> getComments() {
+            return comments;
+        }
 
         public List<TagDTO.Request> getTags() { return tags;}
 

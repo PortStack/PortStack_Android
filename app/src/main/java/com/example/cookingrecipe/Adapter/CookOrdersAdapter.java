@@ -98,14 +98,7 @@ public class CookOrdersAdapter extends RecyclerView.Adapter<CookOrdersAdapter.Vi
             });
         }
 
-        private void removeTextWatcher(int position) {
-            if (position < textWatchers.size()) {
-                TextWatcher textWatcher = textWatchers.get(position);
 
-                // 해당 position의 TextWatcher를 해제합니다.
-                // EditText 등에서 사용하는 TextWatcher 해제 메서드를 호출해야 합니다.
-            }
-        }
 
 
 //        public void bindImage(Uri imageUri){
