@@ -41,7 +41,8 @@ public class SignupActivity extends AppCompatActivity {
         pwcheck.setOnClickListener(v -> {
             if (pw.getText().toString().equals(pw2.getText().toString())) {
                 pwcheck.setText("일치");
-                pwcheck.setTextColor(getResources().getColor(R.color.orange));
+                pwcheck.setTextColor(getResources().getColor(R.color.white));
+                Toast.makeText(SignupActivity.this, "비밀번호가 일치합니다.", Toast.LENGTH_LONG).show();
             } else {
                 pwcheck.setText("불일치");
                 pwcheck.setTextColor(getResources().getColor(R.color.red));
@@ -114,23 +115,22 @@ public class SignupActivity extends AppCompatActivity {
         RetrofitAPI retrofitAPI = RetrofitClient.getClient().create(RetrofitAPI.class);
         RegisterDTO.Request registerRequest = new RegisterDTO.Request(idValue, pwValue, nameValue, emailValue);
 
-        Call<UserDTO.Response> call = retrofitAPI.register(registerRequest);
+        Call<Boolean> call = retrofitAPI.register(registerRequest);
 
-        call.enqueue(new Callback<UserDTO.Response>() {
+        call.enqueue(new Callback<Boolean>() {
             @Override
-            public void onResponse(Call<UserDTO.Response> call, Response<UserDTO.Response> response) {
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(SignupActivity.this, "회원 가입이 완료되었습니다.", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                     startActivity(intent);
-                } else {
-                    Toast.makeText(SignupActivity.this, "회원 가입에 실패했습니다.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<UserDTO.Response> call, Throwable t) {
-                Toast.makeText(SignupActivity.this, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<Boolean> call, Throwable t) {
+
+                Toast.makeText(SignupActivity.this, "회원가입에 실패하였습니다", Toast.LENGTH_SHORT).show();
             }
         });
     }

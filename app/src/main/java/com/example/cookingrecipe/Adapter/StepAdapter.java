@@ -45,11 +45,11 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 System.out.println("image");
                 Glide.with(holder.step_image.getContext())
-                        .load("http://211.109.43.213:8081/" + imageUrl)
+                        .load("http://1.253.239.80:8080/" + imageUrl)
                         .into(holder.step_image);
             } else {
                 System.out.println("none");
-                holder.step_image.setVisibility(View.GONE); // Ẩn ImageView nếu không có ảnh
+                holder.step_image.setVisibility(View.GONE);
 
             }
         }

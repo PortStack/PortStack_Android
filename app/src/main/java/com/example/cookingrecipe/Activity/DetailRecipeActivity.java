@@ -28,8 +28,7 @@ import com.example.cookingrecipe.Domain.Model.Ingredient;
 import com.example.cookingrecipe.Domain.Model.Recipe;
 import com.example.cookingrecipe.Domain.Model.RecipeOrder;
 import com.example.cookingrecipe.Domain.Model.Step;
-import com.example.cookingrecipe.Domain.Network.FirebaseRecipe;
-import com.example.cookingrecipe.Domain.Network.NetworkHelper;
+
 import com.example.cookingrecipe.R;
 import com.example.cookingrecipe.Retrofit.API.RecipeAPI;
 import com.example.cookingrecipe.Retrofit.RetrofitClient;

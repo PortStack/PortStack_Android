@@ -15,6 +15,7 @@ public interface RetrofitAPI {
     Call<UserDTO.Response> getAccessToken(@Body UserDTO.RefreshRequest refreshToken);
 
 
-    Call<UserDTO.Response> register(@Body RegisterDTO.Request registerRequest);
+    @POST("/auth/register")
+    Call<Boolean> register(@Body RegisterDTO.Request registerRequest);
 
 }

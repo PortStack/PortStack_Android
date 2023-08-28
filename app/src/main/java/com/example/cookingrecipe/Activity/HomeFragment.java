@@ -23,7 +23,6 @@ import com.example.cookingrecipe.Domain.DTO.TagDTO;
 import com.example.cookingrecipe.Domain.DTO.UserDTO;
 import com.example.cookingrecipe.Domain.Model.Recipe;
 import com.example.cookingrecipe.Domain.Model.Type;
-import com.example.cookingrecipe.Domain.Network.FirebaseRecipe;
 import com.example.cookingrecipe.R;
 import com.example.cookingrecipe.Retrofit.API.RecipeAPI;
 import com.example.cookingrecipe.Retrofit.RetrofitClient;
@@ -63,9 +62,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-//
-//        recyclerViewCategory();
-//        recyclerViewRecipeToday();
+
 
         getRecipe(0,10);
         getCategory(0,10);
