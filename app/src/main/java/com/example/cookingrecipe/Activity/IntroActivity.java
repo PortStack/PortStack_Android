@@ -119,9 +119,13 @@ public class IntroActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call<UserDTO.Response> call, @NonNull Response<UserDTO.Response> response) {
+                Log.d("LoginAction",String.valueOf(response));
+
                 if(response.isSuccessful()){
                     UserDTO.Response user = response.body();
+                    Log.d("LoginAction",String.valueOf(response.body().getRefreshToken()));
                     TokenUtil.setAccessToken(response.body().getAccessToken());
+                    TokenUtil.setRefreshToken(response.body().getRefreshToken());
 
 
                     AuthConfig.setUserName(context,user.getNickname(),user.getEmail());

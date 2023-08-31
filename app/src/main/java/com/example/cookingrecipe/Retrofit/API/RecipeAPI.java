@@ -1,6 +1,7 @@
 package com.example.cookingrecipe.Retrofit.API;
 
 
+import com.example.cookingrecipe.Domain.DTO.CommentDTO;
 import com.example.cookingrecipe.Domain.DTO.CookOrdersDTO;
 import com.example.cookingrecipe.Domain.DTO.RecipeDTO;
 import com.example.cookingrecipe.Domain.DTO.RecipePageDTO;
@@ -45,8 +46,14 @@ public interface RecipeAPI {
     @POST("/recipe/new")
     Call<ResponseBody> setNewRecipes(@Part("dto") RequestBody cookOrdersDTO, @Part List<MultipartBody.Part> orderImage, @Part List<MultipartBody.Part> themNail);
 
-    @GET("main/search")
+    @GET("/main/search")
     Call<RecipePageDTO> search(@Query("searchText") String searchText);
+
+    @POST("/recipe/comment/new/{recipeId}")
+    Call<Integer> addComment(@Body CommentDTO dto, @Path("recipeId") int recipeId);
+
+    @GET("/recipe/comment/{recipeId}/read")
+    Call<List<CommentDTO>> getComments(@Path("recipeId") int recipeId);
 
 }
 

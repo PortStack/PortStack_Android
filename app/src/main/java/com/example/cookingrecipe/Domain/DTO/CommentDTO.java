@@ -6,7 +6,7 @@ public class CommentDTO {
     @SerializedName("id")
     private int id;
 
-    @SerializedName("nickname")
+    @SerializedName("nickName")
     private String nickname;
 
     @SerializedName("comment")
@@ -17,7 +17,7 @@ public class CommentDTO {
 
     public CommentDTO(String nickname, String content) {
         this.nickname = nickname;
-        this.comment = comment;
+        this.comment = content;
     }
 
     public int getId() {
@@ -33,6 +33,7 @@ public class CommentDTO {
     }
 
     public  String getCreatedDate() {
-        return  getCreatedDate();
+        return createdDate;
     }
+
 }

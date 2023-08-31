@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.example.cookingrecipe.Adapter.CommentAdapter;
 import com.example.cookingrecipe.Adapter.IngredientAdapter;
 import com.example.cookingrecipe.Adapter.StepAdapter;
+import com.example.cookingrecipe.BuildConfig;
 import com.example.cookingrecipe.Domain.DTO.CommentDTO;
 import com.example.cookingrecipe.Domain.DTO.CookOrdersDTO;
 import com.example.cookingrecipe.Domain.DTO.IngredientDTO;
@@ -40,6 +41,7 @@ import com.example.cookingrecipe.Retrofit.RetrofitClient;
 import com.example.cookingrecipe.Room.AppDatabase;
 import com.example.cookingrecipe.Room.DAO.RecipeDao;
 import com.example.cookingrecipe.Room.Entity.RecipeEntity;
+import com.example.cookingrecipe.Util.AuthConfig;
 import com.example.cookingrecipe.Util.TokenUtil;
 import com.google.android.material.appbar.MaterialToolbar;
 
@@ -94,10 +96,6 @@ public class DetailRecipeActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         toolbar.setOnMenuItemClickListener(this::onNavigationItemSelected);
 
-
-
-        loadComments();
-
         commentEditText = findViewById(R.id.commentEditText);
         commentButton = findViewById(R.id.commentButton);
 
@@ -105,7 +103,7 @@ public class DetailRecipeActivity extends AppCompatActivity {
             String commentContent = commentEditText.getText().toString().trim();
             if (!commentContent.isEmpty()) {
                 // 댓글 작성 요청을 서버로 전송하는 코드 작성
-                sendComment(commentContent);
+                sendComment(commentContent,recipeId);
             }
         });
 
@@ -118,7 +116,7 @@ public class DetailRecipeActivity extends AppCompatActivity {
         String imageURL = recipe.getThemNailUrl();
         if (!imageURL.isBlank()) {
             Glide.with(recipe_image.getContext())
-                    .load("http://1.253.239.80:8080/" +imageURL)
+                    .load(BuildConfig.SAMPLE_API_KEY + "/" +imageURL)
                     .into(recipe_image);
         }
         titleTextView = findViewById(R.id.recipe_title);
@@ -268,37 +266,41 @@ public class DetailRecipeActivity extends AppCompatActivity {
         });
     }
 
-    private void sendComment(String commentContent) {
+    private void sendComment(String commentContent,int recipeId) {
         CommentDTO commentDTO = new CommentDTO("YourNickname", commentContent); // 댓글 작성자의 닉네임을 설정
-
-        RetrofitAPI retrofitAPI = RetrofitClient.getClient().create(RetrofitAPI.class);
-        retrofitAPI.addComment(commentDTO).enqueue(new Callback<CommentDTO>() {
+        Log.d("CommentDto",commentDTO.getComment());
+        RecipeAPI recipeAPI = RetrofitClient.getClient().create(RecipeAPI.class);
+        recipeAPI.addComment(commentDTO,recipeId).enqueue(new Callback<Integer>() {
             @Override
-            public void onResponse(Call<CommentDTO> call, Response<CommentDTO> response) {
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+
                 if (response.isSuccessful()) {
-                    CommentDTO addedComment = response.body();
-                    // 추가된 댓글을 RecyclerView에 추가하는 코드를 구현해야 함
-                    commentAdapter.addComment(addedComment);
+
+                    Integer addedComment = response.body();
+                    loadComments(recipeId);
                 }
             }
 
             @Override
-            public void onFailure(Call<CommentDTO> call, Throwable t) {
+            public void onFailure(Call<Integer> call, Throwable t) {
                 // 댓글 작성 실패 처리
                 t.printStackTrace();
+                Log.d("CommentDtoError",commentContent);
             }
         });
 
         // 댓글 작성 후 입력란 초기화
         commentEditText.setText("");
     }
-    private void loadComments() {
-        RetrofitAPI retrofitAPI = RetrofitClient.getClient().create(RetrofitAPI.class);
+    private void loadComments(int recipeId) {
+
+        RecipeAPI retrofitAPI = RetrofitClient.getClient().create(RecipeAPI.class);
 
         // 서버로부터 댓글 목록을 가져오는 Retrofit 호출
-        retrofitAPI.getComments().enqueue(new Callback<List<CommentDTO>>() {
+        retrofitAPI.getComments(recipeId).enqueue(new Callback<List<CommentDTO>>() {
             @Override
             public void onResponse(Call<List<CommentDTO>> call, Response<List<CommentDTO>> response) {
+                Log.d("CommentDto",String.valueOf(response));
                 if (response.isSuccessful()) {
                     List<CommentDTO> comments = response.body();
 
@@ -317,7 +319,7 @@ public class DetailRecipeActivity extends AppCompatActivity {
 
 
     private void initCommentRecyclerView(List<CommentDTO> comments) {
-        commentAdapter = new CommentAdapter(comments);
+        commentAdapter = new CommentAdapter(comments, AuthConfig.getUserName(this));
         commentRecyclerView = findViewById(R.id.commentRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         commentRecyclerView.setLayoutManager(layoutManager);

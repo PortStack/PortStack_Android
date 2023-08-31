@@ -1,5 +1,7 @@
 package com.example.cookingrecipe.Retrofit;
 
+import android.util.Log;
+
 import com.example.cookingrecipe.BuildConfig;
 import com.example.cookingrecipe.Util.TokenUtil;
 
@@ -15,20 +17,16 @@ public class RetrofitClient {
     public static Retrofit getClient() {
         jwtToken = TokenUtil.getAccessToken("none");
 
-        if (retrofit == null) {
-            OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        // Add JwtInterceptor to the OkHttpClient
+        httpClient.addInterceptor(new JwtInterceptor());
 
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient.build())
+                .build();
 
-
-            // Add JwtInterceptor to the OkHttpClient
-            httpClient.addInterceptor(new JwtInterceptor());
-
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .client(httpClient.build())
-                    .build();
-        }
         return retrofit;
     }
 

@@ -1,9 +1,11 @@
 // CommentAdapter.java
 package com.example.cookingrecipe.Adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,9 +19,11 @@ import java.util.List;
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
 
     private List<CommentDTO> comments;
+    private String nickName;
 
-    public CommentAdapter(List<CommentDTO> comments) {
+    public CommentAdapter(List<CommentDTO> comments, String nickName) {
         this.comments = comments;
+        this.nickName = nickName;
     }
 
     @NonNull
@@ -34,6 +38,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         CommentDTO comment = comments.get(position);
         holder.nicknameTextView.setText(comment.getNickname());
         holder.contentTextView.setText(comment.getComment());
+        holder.createDateView.setText(comment.getCreatedDate());
+        if(comment.getNickname().equals(nickName)){
+            holder.buttonView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -49,11 +57,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     static class CommentViewHolder extends RecyclerView.ViewHolder {
         TextView nicknameTextView;
         TextView contentTextView;
+        TextView createDateView;
+        LinearLayout buttonView;
 
         CommentViewHolder(@NonNull View itemView) {
             super(itemView);
             nicknameTextView = itemView.findViewById(R.id.nicknameTextView);
             contentTextView = itemView.findViewById(R.id.contentTextView);
+            createDateView = itemView.findViewById(R.id.createDateView);
+            buttonView = itemView.findViewById(R.id.buttonView);
         }
     }
 }

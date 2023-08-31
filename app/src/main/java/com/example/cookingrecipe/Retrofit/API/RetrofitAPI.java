@@ -22,11 +22,7 @@ public interface RetrofitAPI {
     @POST("/auth/register")
     Call<Boolean> register(@Body RegisterDTO.Request registerRequest);
 
-    @POST("/comments")
-    Call<CommentDTO> addComment(@Body CommentDTO comment);
 
-    @GET("/comments")
-    Call<List<CommentDTO>> getComments();
 
 
 }
