@@ -1,5 +1,6 @@
 package com.example.cookingrecipe.Retrofit;
 
+import com.example.cookingrecipe.BuildConfig;
 import com.example.cookingrecipe.Util.TokenUtil;
 
 import okhttp3.OkHttpClient;
@@ -7,7 +8,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private final static String BASE_URL = "http://1.253.239.80:8080";
+    private final static String BASE_URL = BuildConfig.SAMPLE_API_KEY;
     private static Retrofit retrofit = null;
     private static String jwtToken = null;
 

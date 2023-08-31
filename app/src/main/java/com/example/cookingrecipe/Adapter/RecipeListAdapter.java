@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.cookingrecipe.BuildConfig;
 import com.example.cookingrecipe.Domain.DTO.RecipeDTO;
 import com.example.cookingrecipe.Domain.Model.Recipe;
 import com.example.cookingrecipe.OnFavoriteIconClickListener;
@@ -67,7 +68,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
         String imageURL = recipe.getThemNailUrl();
         if (!imageURL.isBlank()) {
             Glide.with(holder.imageFavorite.getContext())
-                    .load("http://1.253.239.80:8080/" + imageURL)
+                    .load(BuildConfig.SAMPLE_API_KEY+ "/" + imageURL)
                     .into(holder.imageFavorite);
         }
 

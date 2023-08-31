@@ -3,6 +3,9 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     namespace 'com.example.cookingrecipe'
     compileSdk 33
@@ -17,6 +20,8 @@ android {
 //        buildConfigField "String", "API_SERVER_IP", properties['api_server_ip']
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "SAMPLE_API_KEY", properties["api.key"]
     }
 
     buildTypes {
