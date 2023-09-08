@@ -119,6 +119,10 @@ public class DetailRecipeActivity extends AppCompatActivity {
                     .load(BuildConfig.SAMPLE_API_KEY + "/" +imageURL)
                     .into(recipe_image);
         }
+        isFavorite = recipe.getLikeState();
+        if (isFavorite) {
+            toolbar.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite_fill);
+        }
         titleTextView = findViewById(R.id.recipe_title);
         titleTextView.setText(recipe.getTitle());
         toolbar.setTitle(recipe.getTitle());
@@ -134,7 +138,7 @@ public class DetailRecipeActivity extends AppCompatActivity {
 
     private boolean onNavigationItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.favorite) {
-//            toggleFavorite();
+            toggleFavorite();
             return true;
         } else if (item.getItemId() == R.id.share) {
 
@@ -244,15 +248,14 @@ public class DetailRecipeActivity extends AppCompatActivity {
 
     private void getRecipe(int recipeId){
         RecipeAPI recipeAPI = RetrofitClient.getClient().create(RecipeAPI.class);
-        Log.d("recipeId", String.valueOf(recipeId));
-        recipeAPI.getRecipeDetail(recipeId).enqueue(new Callback<RecipeDTO.Request>() {
+        recipeAPI.getRecipeDetail(recipeId,AuthConfig.getUserName(this)).enqueue(new Callback<RecipeDTO.Request>() {
 
             @Override
             public void onResponse(@NonNull Call<RecipeDTO.Request> call, @NonNull Response<RecipeDTO.Request> response) {
                 if(response.isSuccessful()){
                     recipe = response.body();
                     showDetailRecipe(recipe);
-                    Log.e("recipeTest",recipe.getTitle());
+                    Log.e("recipeTest",String.valueOf(recipe.getLikeState()));
                     initCommentRecyclerView(recipe.getComments());
                 }
             }
@@ -315,6 +318,36 @@ public class DetailRecipeActivity extends AppCompatActivity {
                 t.printStackTrace();
             }
         });
+    }
+
+    private void toggleFavorite(){
+        RecipeAPI retrofitAPI = RetrofitClient.getClient().create(RecipeAPI.class);
+        retrofitAPI.likedRecipe(recipeId).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful()) {
+                    Boolean res = response.body();
+
+                    // CommentAdapter 초기화 및 RecyclerView에 설정
+                    changeLikedButton(res);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void changeLikedButton(Boolean likeState){
+        if (likeState) {
+            toolbar.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite_fill);
+            isFavorite = true;
+        } else {
+            toolbar.getMenu().findItem(R.id.favorite).setIcon(R.drawable.ic_favorite_white);
+            isFavorite = false;
+        }
     }
 
 

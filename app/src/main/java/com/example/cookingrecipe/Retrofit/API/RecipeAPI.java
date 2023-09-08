@@ -39,8 +39,12 @@ public interface RecipeAPI {
 
     @GET("/recipe/read/{id}")
     Call<RecipeDTO.Request> getRecipeDetail(
-            @Path("id") int page
+            @Path("id") int page,
+            @Query("nickname") String nickName
     );
+
+    @GET("/recipe/like/{idx}")
+    Call<Boolean> likedRecipe(@Path("idx") int idx);
 
     @Multipart
     @POST("/recipe/new")
