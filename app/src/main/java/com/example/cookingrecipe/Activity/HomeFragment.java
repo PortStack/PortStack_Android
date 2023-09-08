@@ -155,7 +155,7 @@ public class HomeFragment extends Fragment {
     private void getRecipe(int page, int size){
 
         RecipeAPI recipeAPI = RetrofitClient.getClient().create(RecipeAPI.class);
-        recipeAPI.getRecipes(page,size,"id,DESC").enqueue(new Callback<RecipePageDTO>() {
+        recipeAPI.getRecipes(page,size,"id,DESC",AuthConfig.getUserName(getContext())).enqueue(new Callback<RecipePageDTO>() {
 
             @Override
             public void onResponse(@NonNull Call<RecipePageDTO> call, @NonNull Response<RecipePageDTO> response) {

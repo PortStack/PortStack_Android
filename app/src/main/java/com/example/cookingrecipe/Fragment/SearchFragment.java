@@ -25,6 +25,7 @@ import com.example.cookingrecipe.Retrofit.RetrofitClient;
 import com.example.cookingrecipe.Room.AppDatabase;
 import com.example.cookingrecipe.Room.DAO.RecipeDao;
 import com.example.cookingrecipe.Room.Entity.RecipeEntity;
+import com.example.cookingrecipe.Util.AuthConfig;
 import com.example.cookingrecipe.Util.TokenUtil;
 import com.example.cookingrecipe.databinding.FragmentSearchBinding;
 
@@ -113,7 +114,7 @@ public class SearchFragment extends Fragment {
 
     public void searchRecipe(String text) {
         RecipeAPI recipeAPI = RetrofitClient.getClient().create(RecipeAPI.class);
-        recipeAPI.search(text).enqueue(new Callback<RecipePageDTO>() {
+        recipeAPI.search(text, AuthConfig.getUserName(getContext())).enqueue(new Callback<RecipePageDTO>() {
 
             @Override
             public void onResponse(@NonNull Call<RecipePageDTO> call, @NonNull Response<RecipePageDTO> response) {
@@ -171,9 +172,12 @@ public class SearchFragment extends Fragment {
         }
     }
 
+
+
+
     public void requestRecipe(){
         RecipeAPI recipeAPI = RetrofitClient.getClient().create(RecipeAPI.class);
-        recipeAPI.getRecipes(0,10,"id,DESC").enqueue(new Callback<RecipePageDTO>() {
+        recipeAPI.getRecipes(0,10,"id,DESC",AuthConfig.getUserName(getContext())).enqueue(new Callback<RecipePageDTO>() {
 
             @Override
             public void onResponse(@NonNull Call<RecipePageDTO> call, @NonNull Response<RecipePageDTO> response) {

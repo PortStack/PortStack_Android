@@ -1,5 +1,6 @@
 package com.example.cookingrecipe.Adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +18,17 @@ import com.example.cookingrecipe.Domain.Model.Recipe;
 import com.example.cookingrecipe.OnFavoriteIconClickListener;
 import com.example.cookingrecipe.OnItemClickListener;
 import com.example.cookingrecipe.R;
+import com.example.cookingrecipe.Retrofit.API.RecipeAPI;
+import com.example.cookingrecipe.Retrofit.RetrofitClient;
 import com.example.cookingrecipe.Room.AppDatabase;
 import com.example.cookingrecipe.Room.DAO.RecipeDao;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.ViewHolder> {
     List<RecipeDTO.Request> recipeList;
@@ -56,6 +63,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
     public void onBindViewHolder(@NonNull RecipeListAdapter.ViewHolder holder, int position) {
         RecipeDTO.Request recipe = recipeList.get(holder.getAdapterPosition());
         isFavorite = recipe.getLikeState();
+        Log.e("RecipeRequest",String.valueOf(isFavorite));
         if (isFavorite) {
             holder.icon_favorite.setImageResource(R.drawable.ic_favorite_fill);
         } else {
@@ -80,6 +88,7 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
 
         holder.icon_favorite.setOnClickListener(view -> {
             if (favoriteIconClickListener != null) {
+                toggleFavorite(recipe.getId());
                 if (isFavorite) {
                     isFavorite = false;
                     // 좋아요 취소 기능
@@ -94,6 +103,26 @@ public class RecipeListAdapter extends RecyclerView.Adapter<RecipeListAdapter.Vi
             }
         });
     }
+
+    private void toggleFavorite(int recipeId){
+        RecipeAPI retrofitAPI = RetrofitClient.getClient().create(RecipeAPI.class);
+        retrofitAPI.likedRecipe(recipeId).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful()) {
+                    Boolean res = response.body();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+
+            }
+        });
+    }
+
+
 
 
     @Override

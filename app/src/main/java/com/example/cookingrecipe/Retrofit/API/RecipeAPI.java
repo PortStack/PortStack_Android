@@ -27,7 +27,8 @@ public interface RecipeAPI {
     Call<RecipePageDTO> getRecipes(
             @Query("page") int page,
             @Query("size") int size,
-            @Query("sort") String sort
+            @Query("sort") String sort,
+            @Query("nickname") String nickname
     );
 
     @GET("/recipe/category")
@@ -51,7 +52,7 @@ public interface RecipeAPI {
     Call<ResponseBody> setNewRecipes(@Part("dto") RequestBody cookOrdersDTO, @Part List<MultipartBody.Part> orderImage, @Part List<MultipartBody.Part> themNail);
 
     @GET("/main/search")
-    Call<RecipePageDTO> search(@Query("searchText") String searchText);
+    Call<RecipePageDTO> search(@Query("searchText") String searchText,@Query("nickname") String nickName);
 
     @POST("/recipe/comment/new/{recipeId}")
     Call<Integer> addComment(@Body CommentDTO dto, @Path("recipeId") int recipeId);
