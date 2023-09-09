@@ -14,6 +14,7 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -59,6 +60,9 @@ public interface RecipeAPI {
 
     @GET("/recipe/comment/{recipeId}/read")
     Call<List<CommentDTO>> getComments(@Path("recipeId") int recipeId);
+
+    @DELETE("/recipe/comment/delete/{id}")
+    Call<Integer> deleteComment(@Path("id") int id);
 
 }
 

@@ -352,7 +352,7 @@ public class DetailRecipeActivity extends AppCompatActivity {
 
 
     private void initCommentRecyclerView(List<CommentDTO> comments) {
-        commentAdapter = new CommentAdapter(comments, AuthConfig.getUserName(this));
+        commentAdapter = new CommentAdapter(comments, AuthConfig.getUserName(this),this,recipeId);
         commentRecyclerView = findViewById(R.id.commentRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         commentRecyclerView.setLayoutManager(layoutManager);

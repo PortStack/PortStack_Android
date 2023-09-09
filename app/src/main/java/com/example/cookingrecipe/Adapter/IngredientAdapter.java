@@ -32,11 +32,9 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull IngredientAdapter.ViewHolder holder, int position) {
-        Log.d("testsdfer1", recipe.getTitle());
         System.out.println(recipe.getIngredientList().get(0).getNames());
         IngredientDTO ingredient = recipe.getIngredientList().get(holder.getAdapterPosition());
         holder.ingredient_text.setText(ingredient.getCounts() + " " + ingredient.getUnits() + " " + ingredient.getNames());
-
     }
 
     @Override
